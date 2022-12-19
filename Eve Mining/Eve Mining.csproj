@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tools\ColorExt.cs" />
+    <Compile Include="Extentions\ColorExt.cs" />
     <Compile Include="Tools\Config.cs" />
     <Compile Include="Windows\Api.cs" />
     <Compile Include="Enums\BotState.cs" />

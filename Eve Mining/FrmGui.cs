@@ -1,4 +1,5 @@
 ﻿using Eve_Mining.Enums;
+using Eve_Mining.Extensions;
 using Eve_Mining.Tools;
 using Eve_Mining.Windows;
 using System;
