@@ -359,7 +359,6 @@ namespace Eve_Mining
                         this.OpenMainMenu(ref m, rW);
                         this.WarpToPortal(ref m, rW);
 
-
                         break;
 
                     case MiningState.Selecting_target:
@@ -699,32 +698,26 @@ namespace Eve_Mining
 
         private void FrmGui_Load(object sender, EventArgs e)
         {
-            Config c = new Config();
+            this.Chk1.Checked = Config.ReadBoolean("F1");
+            this.Chk2.Checked = Config.ReadBoolean("F2");
+            this.Chk3.Checked = Config.ReadBoolean("F3");
 
-            this.Chk1.Checked = c.ReadBoolean("F1");
-            this.Chk2.Checked = c.ReadBoolean("F2");
-            this.Chk3.Checked = c.ReadBoolean("F3");
+            this.NumB.Value = Config.ReadDecimal("MaxBeltWarp", 1);
+            this.NumS.Value = Config.ReadDecimal("MaxStationWarp", 1);
 
-            decimal d = c.ReadDecimal("MaxBeltWarp");
-            this.NumB.Value = d >= 1 ? d : 1;
-            d = c.ReadDecimal("MaxStationWarp");
-            this.NumS.Value = d >= 1 ? d : 1;
-
-            this.ChkPortal.Checked = c.ReadBoolean("UsePortal");
+            this.ChkPortal.Checked = Config.ReadBoolean("UsePortal");
         }
 
         private void FrmGui_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Config c = new Config();
+            Config.AddOrUpdate("F1", this.Chk1.Checked);
+            Config.AddOrUpdate("F2", this.Chk2.Checked);
+            Config.AddOrUpdate("F3", this.Chk3.Checked);
 
-            c.AddOrUpdate("F1", this.Chk1.Checked);
-            c.AddOrUpdate("F2", this.Chk2.Checked);
-            c.AddOrUpdate("F3", this.Chk3.Checked);
+            Config.AddOrUpdate("MaxBeltWarp", this.NumB.Value);
+            Config.AddOrUpdate("MaxStationWarp", this.NumS.Value);
 
-            c.AddOrUpdate("MaxBeltWarp", this.NumB.Value);
-            c.AddOrUpdate("MaxStationWarp", this.NumS.Value);
-
-            c.AddOrUpdate("UsePortal", this.ChkPortal.Checked);
+            Config.AddOrUpdate("UsePortal", this.ChkPortal.Checked);
         }
 
         private void NumB_ValueChanged(object sender, EventArgs e)
