@@ -13,6 +13,8 @@
         Warping_to_station = 8,
         Docking = 9,
         Unloading = 10,
-        Cleaning_interface = 11
+        Cleaning_interface = 11,
+        Warping_to_portal = 12
+
     }
 }

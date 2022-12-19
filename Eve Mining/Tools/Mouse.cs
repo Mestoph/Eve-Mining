@@ -30,7 +30,6 @@ namespace Eve_Mining.Tools
         #endregion
         #region Set/Get
 
-
         internal int Delay
         {
             get

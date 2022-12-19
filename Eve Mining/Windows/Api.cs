@@ -100,6 +100,27 @@ namespace Eve_Mining.Windows
         }
 
         [Flags]
+        public enum DwmWindowAttribute : uint
+        {
+            DWMWA_NCRENDERING_ENABLED = 1,
+            DWMWA_NCRENDERING_POLICY,
+            DWMWA_TRANSITIONS_FORCEDISABLED,
+            DWMWA_ALLOW_NCPAINT,
+            DWMWA_CAPTION_BUTTON_BOUNDS,
+            DWMWA_NONCLIENT_RTL_LAYOUT,
+            DWMWA_FORCE_ICONIC_REPRESENTATION,
+            DWMWA_FLIP3D_POLICY,
+            DWMWA_EXTENDED_FRAME_BOUNDS,
+            DWMWA_HAS_ICONIC_BITMAP,
+            DWMWA_DISALLOW_PEEK,
+            DWMWA_EXCLUDED_FROM_PEEK,
+            DWMWA_CLOAK,
+            DWMWA_CLOAKED,
+            DWMWA_FREEZE_REPRESENTATION,
+            DWMWA_LAST
+        }
+
+        [Flags]
         internal enum KeyCode : ushort
         {
             #region Media
@@ -276,6 +297,20 @@ namespace Eve_Mining.Windows
         #endregion
         #region Structures
 
+        [Serializable, StructLayout(LayoutKind.Sequential)]
+        public struct Rect
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+
+            public Rectangle ToRectangle()
+            {
+                return Rectangle.FromLTRB(Left, Top, Right, Bottom);
+            }
+        }
+
         [StructLayout(LayoutKind.Sequential)]
         internal struct KeyboardInput
         {
@@ -337,10 +372,10 @@ namespace Eve_Mining.Windows
         internal static extern bool SetForegroundWindow(IntPtr _hWnd);
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool GetWindowRect(IntPtr _hWnd, out Rectangle _lpRect);
+        internal static extern bool GetWindowRect(IntPtr _hWnd, out Rect _lpRect);
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool GetClientRect(IntPtr _hWnd, out Rectangle _lpRect);
+        internal static extern bool GetClientRect(IntPtr _hWnd, out Rect _lpRect);
 
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern bool MoveWindow(IntPtr _hWnd, int _X, int _Y, int _nWidth, int _nHeight, bool _bRepaint);
@@ -394,7 +429,30 @@ namespace Eve_Mining.Windows
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool BitBlt([In] IntPtr _hdc, int _nXDest, int _nYDest, int _nWidth, int _nHeight, [In] IntPtr _hdcSrc, int _nXSrc, int _nYSrc, TernaryRasterOperations _dwRop);
 
+        [DllImport("dwmapi.dll", SetLastError = true)]
+        internal static extern int DwmGetWindowAttribute(IntPtr _hWnd, int _dwAttribute, out Rect _pvAttribute, int _cbAttribute);
+
         #endregion
+        internal static Rectangle GetWindowRect(IntPtr _hWnd)
+        {
+            Rect rect = new Rect();
+
+            if (Environment.OSVersion.Version.Major >= 6)
+            {
+                int size = Marshal.SizeOf(typeof(Rect));
+                DwmGetWindowAttribute(_hWnd, (int)DwmWindowAttribute.DWMWA_EXTENDED_FRAME_BOUNDS, out rect, size);
+                rect.Left++;
+                rect.Right--;
+            }
+            else
+            {
+                GetWindowRect(_hWnd, out rect);
+            }
+
+            return rect.ToRectangle();
+        }
+
+
         #region Tools : EnumWindows
 
         internal static string GetWindowText(IntPtr _hWnd)
