@@ -12,6 +12,13 @@ namespace Eve_Mining.Tools
         private static bool m_bAutoSave = false;
 
         #endregion
+        #region Constructor
+
+        internal Config()
+        {
+        }
+
+        #endregion
         #region Getters/Setters
 
         internal static bool AutoSave
