@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace Eve_Mining.Tools
+namespace Eve_Mining.Extentions
 {
     internal static class ColorExt
     {

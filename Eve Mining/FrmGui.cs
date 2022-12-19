@@ -1,4 +1,5 @@
 ﻿using Eve_Mining.Enums;
+using Eve_Mining.Extentions;
 using Eve_Mining.Tools;
 using Eve_Mining.Windows;
 using System;
@@ -54,7 +55,7 @@ namespace Eve_Mining
         private int m_iNumberOfDot = 0;
         private int m_iBelt = 1;
         private int m_iStation = 1;
-        private int m_iPortal = 1;
+        private readonly int m_iPortal = 1;
         private int m_iBeltCnt = 1;
         private int m_iStationCnt = 1;
         private int m_iCycles = 0;
@@ -68,40 +69,40 @@ namespace Eve_Mining
         {
             InitializeComponent();
 
-            Api.RegisterHotKey(this.Handle, START_HOTKEY_ID, Api.MOD_ALT, (int)Keys.F2);
-            Api.RegisterHotKey(this.Handle, PAUSE_HOTKEY_ID, Api.MOD_ALT, (int)Keys.F3);
+            Api.RegisterHotKey(Handle, START_HOTKEY_ID, Api.MOD_ALT, (int)Keys.F2);
+            Api.RegisterHotKey(Handle, PAUSE_HOTKEY_ID, Api.MOD_ALT, (int)Keys.F3);
 
-            this.m_MiningState = MiningState.Idle;
-            this.m_BotState = BotState.None;
+            m_MiningState = MiningState.Idle;
+            m_BotState = BotState.None;
 
-            this.m_GuiUpdateTimer = new System.Windows.Forms.Timer();
-            this.m_GuiUpdateTimer.Tick += this.TimerTick;
-            this.m_GuiUpdateTimer.Interval = 250;
-            this.m_GuiUpdateTimer.Start();
+            m_GuiUpdateTimer = new System.Windows.Forms.Timer();
+            m_GuiUpdateTimer.Tick += TimerTick;
+            m_GuiUpdateTimer.Interval = 250;
+            m_GuiUpdateTimer.Start();
 
-            this.GuiUpdate();
+            GuiUpdate();
 
-            this.StatusStrip.Text = INITIALIZING;
+            StatusStrip.Text = INITIALIZING;
 
-            this.KeyPreview = true;
+            KeyPreview = true;
         }
 
         ~FrmGui()
         {
-            if (this.m_GuiUpdateTimer != null)
+            if (m_GuiUpdateTimer != null)
             {
-                if (this.m_GuiUpdateTimer.Enabled)
-                    this.m_GuiUpdateTimer.Stop();
+                if (m_GuiUpdateTimer.Enabled)
+                    m_GuiUpdateTimer.Stop();
 
-                this.m_GuiUpdateTimer = null;
+                m_GuiUpdateTimer = null;
             }
 
-            if (this.m_MiningThread != null)
+            if (m_MiningThread != null)
             {
-                if (this.m_MiningThread.IsAlive)
-                    this.m_MiningThread.Abort();
+                if (m_MiningThread.IsAlive)
+                    m_MiningThread.Abort();
 
-                this.m_MiningThread = null;
+                m_MiningThread = null;
             }
 
             Environment.Exit(Environment.ExitCode);
@@ -117,12 +118,12 @@ namespace Eve_Mining
                 switch (_m.WParam.ToInt32())
                 {
                     case START_HOTKEY_ID:
-                        this.BtnStart.PerformClick();
+                        BtnStart.PerformClick();
 
                         break;
 
                     case PAUSE_HOTKEY_ID:
-                        this.BtnPause.PerformClick();
+                        BtnPause.PerformClick();
 
                         break;
                 }
@@ -136,23 +137,23 @@ namespace Eve_Mining
 
         private void TimerTick(object sender, EventArgs e)
         {
-            this.GuiUpdate();
+            GuiUpdate();
         }
 
         private void LblStart_Click(object sender, EventArgs e)
         {
-            if (this.m_BotState == BotState.Waiting || this.m_BotState == BotState.Stopped)
-                this.MiningStart();
+            if (m_BotState == BotState.Waiting || m_BotState == BotState.Stopped)
+                MiningStart();
             else
-                this.MiningStop(BotState.Stopped);
+                MiningStop(BotState.Stopped);
         }
 
         private void BtnPause_Click(object sender, EventArgs e)
         {
-            if (this.m_BotState == BotState.Started)
-                this.MiningPause();
+            if (m_BotState == BotState.Started)
+                MiningPause();
             else
-                this.MiningResume();
+                MiningResume();
         }
 
         #endregion
@@ -160,83 +161,83 @@ namespace Eve_Mining
 
         private void GuiUpdate()
         {
-            if (!this.IsEve())
-                this.MiningStop(BotState.None);
+            if (!IsEve())
+                MiningStop(BotState.None);
 
-            else if (this.m_BotState == BotState.None)
-                this.m_BotState = BotState.Waiting;
+            else if (m_BotState == BotState.None)
+                m_BotState = BotState.Waiting;
 
-            switch (this.m_BotState)
+            switch (m_BotState)
             {
                 case BotState.None:
-                    this.BtnStart.Enabled = false;
-                    this.BtnStart.Text = string.Concat(START, SPACE, ALT_F2);
+                    BtnStart.Enabled = false;
+                    BtnStart.Text = string.Concat(START, SPACE, ALT_F2);
 
-                    this.BtnPause.Enabled = false;
-                    this.BtnPause.Text = string.Concat(PAUSE, SPACE, ALT_F3);
+                    BtnPause.Enabled = false;
+                    BtnPause.Text = string.Concat(PAUSE, SPACE, ALT_F3);
 
-                    this.StatusStrip.Text = WAITING_GAME;
+                    StatusStrip.Text = WAITING_GAME;
 
                     break;
 
                 case BotState.Waiting:
                 case BotState.Stopped:
-                    this.BtnStart.Enabled = true;
-                    this.BtnStart.Text = string.Concat(START, SPACE, ALT_F2); ;
+                    BtnStart.Enabled = true;
+                    BtnStart.Text = string.Concat(START, SPACE, ALT_F2); ;
 
-                    this.BtnPause.Enabled = false;
-                    this.BtnPause.Text = string.Concat(PAUSE, SPACE, ALT_F3);
+                    BtnPause.Enabled = false;
+                    BtnPause.Text = string.Concat(PAUSE, SPACE, ALT_F3);
 
-                    this.StatusStrip.Text = WAITING_START;
+                    StatusStrip.Text = WAITING_START;
 
                     break;
 
                 case BotState.Started:
-                    this.BtnStart.Enabled = true;
-                    this.BtnStart.Text = string.Concat(STOP, SPACE, ALT_F2);
+                    BtnStart.Enabled = true;
+                    BtnStart.Text = string.Concat(STOP, SPACE, ALT_F2);
 
-                    this.BtnPause.Enabled = true;
-                    this.BtnPause.Text = string.Concat(PAUSE, SPACE, ALT_F3);
+                    BtnPause.Enabled = true;
+                    BtnPause.Text = string.Concat(PAUSE, SPACE, ALT_F3);
 
-                    this.StatusStrip.Text = RUNNING;
+                    StatusStrip.Text = RUNNING;
 
                     break;
 
                 case BotState.Suspended:
-                    this.BtnStart.Enabled = true;
-                    this.BtnStart.Text = string.Concat(STOP, SPACE, ALT_F2);
+                    BtnStart.Enabled = true;
+                    BtnStart.Text = string.Concat(STOP, SPACE, ALT_F2);
 
-                    this.BtnPause.Enabled = true;
-                    this.BtnPause.Text = string.Concat(RESUME, SPACE, ALT_F3);
+                    BtnPause.Enabled = true;
+                    BtnPause.Text = string.Concat(RESUME, SPACE, ALT_F3);
 
-                    this.StatusStrip.Text = WAITING_RESUME;
+                    StatusStrip.Text = WAITING_RESUME;
 
                     break;
             }
 
-            this.AnimateStatus();
+            AnimateStatus();
 
-            this.LblBeltV.Text = string.Format(BELT_NUMBER, this.m_iBelt);
-            this.LblStationV.Text = string.Format(STATION_NUMBER, this.m_iStation);
-            this.LblStatusV.Text = this.m_MiningState.ToString().Replace('_', ' ');
+            LblBeltV.Text = string.Format(BELT_NUMBER, m_iBelt);
+            LblStationV.Text = string.Format(STATION_NUMBER, m_iStation);
+            LblStatusV.Text = m_MiningState.ToString().Replace('_', ' ');
 
-            TimeSpan t = this.m_totalTime.Elapsed;
-            this.LblTotalTimeV.Text = t.ToString(TIME);
+            TimeSpan t = m_totalTime.Elapsed;
+            LblTotalTimeV.Text = t.ToString(TIME);
 
-            this.LblCycleV.Text = this.m_iCycles.ToString();
+            LblCycleV.Text = m_iCycles.ToString();
 
-            if (this.m_iCycles <= 0)
-                this.LblAvrTimeV.Text = NOT_AVAILABLE;
+            if (m_iCycles <= 0)
+                LblAvrTimeV.Text = NOT_AVAILABLE;
             else
             {
-                t = new TimeSpan(t.Ticks / this.m_iCycles);
-                this.LblAvrTimeV.Text = t.ToString(TIME);
+                t = new TimeSpan(t.Ticks / m_iCycles);
+                LblAvrTimeV.Text = t.ToString(TIME);
             }
         }
 
         private bool IsEve()
         {
-            if (this.GetEvehWnd() != IntPtr.Zero)
+            if (GetEvehWnd() != IntPtr.Zero)
                 return true;
 
             return false;
@@ -267,7 +268,7 @@ namespace Eve_Mining
 
         private bool MiningIsAlive()
         {
-            if (this.m_BotState == BotState.Waiting || this.m_BotState == BotState.Stopped || this.m_BotState == BotState.None)
+            if (m_BotState == BotState.Waiting || m_BotState == BotState.Stopped || m_BotState == BotState.None)
                 return false;
 
             return true;
@@ -283,7 +284,7 @@ namespace Eve_Mining
 
             while (true)
             {
-                if (!this.MiningIsAlive())
+                if (!MiningIsAlive())
                     return;
 
                 IntPtr hWnd = GetEvehWnd();
@@ -311,11 +312,11 @@ namespace Eve_Mining
 
                 m.LeftClickTo(rW.X + iCx - 98, rW.Y + rC.Bottom - 85);
 
-                switch (this.m_MiningState)
+                switch (m_MiningState)
                 {
                     case MiningState.Idle:
 
-                        this.m_MiningState = MiningState.Undocking;
+                        m_MiningState = MiningState.Undocking;
 
                         break;
 
@@ -328,36 +329,36 @@ namespace Eve_Mining
                         {
                             Thread.Sleep(1000);
 
-                            if (!this.MiningIsAlive())
+                            if (!MiningIsAlive())
                                 return;
                         }
 
-                        this.m_MiningState = MiningState.Warping_to_belt;
+                        m_MiningState = MiningState.Warping_to_belt;
 
                         break;
 
                     case MiningState.Warping_to_belt:
 
-                        this.OpenMainMenu(ref m, rW);
-                        this.WarpToBelt(ref m, rW);
+                        OpenMainMenu(ref m, rW);
+                        WarpToBelt(ref m, rW);
 
                         while (m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
                             m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF")))
                         {
                             Thread.Sleep(1000);
 
-                            if (!this.MiningIsAlive())
+                            if (!MiningIsAlive())
                                 return;
                         }
 
-                        this.m_MiningState = MiningState.Selecting_target;
+                        m_MiningState = MiningState.Selecting_target;
 
                         break;
 
                     case MiningState.Warping_to_portal:
 
-                        this.OpenMainMenu(ref m, rW);
-                        this.WarpToPortal(ref m, rW);
+                        OpenMainMenu(ref m, rW);
+                        WarpToPortal(ref m, rW);
 
                         break;
 
@@ -365,47 +366,47 @@ namespace Eve_Mining
                         bool exit = false;
 
                         m.LeftClickTo(rW.X + rW.Width - 395, rW.Y + 237);
-                        m.LeftClickTo(rW.X + rW.Width - 395, rW.Y + 292 + (24 * this.m_iSelection));
+                        m.LeftClickTo(rW.X + rW.Width - 395, rW.Y + 292 + (24 * m_iSelection));
 
                         while (!m.GetPixel(rW.X + rW.Width - 546, rW.Y + 163).Equals(Color.FromArgb(255, 255, 255))
-                            || (m.GetPixel(rW.X + rW.Width - 555, rW.Y + 295 + (24 * this.m_iSelection)).Equals(Color.FromArgb(255, 255, 255)) &&
-                                m.GetPixel(rW.X + rW.Width - 555, rW.Y + 299 + (24 * this.m_iSelection)).Equals(Color.FromArgb(255, 255, 255))))
+                            || (m.GetPixel(rW.X + rW.Width - 555, rW.Y + 295 + (24 * m_iSelection)).Equals(Color.FromArgb(255, 255, 255)) &&
+                                m.GetPixel(rW.X + rW.Width - 555, rW.Y + 299 + (24 * m_iSelection)).Equals(Color.FromArgb(255, 255, 255))))
                         {
                             Thread.Sleep(250);
 
-                            if (!this.MiningIsAlive())
+                            if (!MiningIsAlive())
                                 return;
 
-                            if (this.m_iTries < MAX_TRIES)
+                            if (m_iTries < MAX_TRIES)
                             {
                                 bool portal = false;
 
-                                if (this.m_iSelection++ > MAX_SELECTIONS)
+                                if (m_iSelection++ > MAX_SELECTIONS)
                                 {
-                                    this.m_iSelection = 0;
+                                    m_iSelection = 0;
 
-                                    this.m_iBelt++;
+                                    m_iBelt++;
 
-                                    if (this.m_iBelt > this.m_iBeltCnt)
+                                    if (m_iBelt > m_iBeltCnt)
                                     {
-                                        this.m_iTries++;
+                                        m_iTries++;
 
-                                        this.m_iBelt = 1;
+                                        m_iBelt = 1;
                                     }
 
-                                    this.m_iStation++;
-                                    if (this.m_iStation > this.m_iStationCnt)
+                                    m_iStation++;
+                                    if (m_iStation > m_iStationCnt)
                                     {
-                                        this.m_iStation = 1;
+                                        m_iStation = 1;
 
-                                        if (this.ChkPortal.Checked)
+                                        if (ChkPortal.Checked)
                                             portal = true;
                                     }
 
                                     if (portal)
-                                        this.m_MiningState = MiningState.Warping_to_portal;
+                                        m_MiningState = MiningState.Warping_to_portal;
                                     else
-                                        this.m_MiningState = MiningState.Warping_to_station;
+                                        m_MiningState = MiningState.Warping_to_station;
                                 }
 
                                 exit = true;
@@ -413,11 +414,11 @@ namespace Eve_Mining
                                 break;
                             }
 
-                            m.LeftClickTo(rW.X + rW.Width - 395, rW.Y + 294 + (22 * this.m_iSelection));
+                            m.LeftClickTo(rW.X + rW.Width - 395, rW.Y + 294 + (22 * m_iSelection));
                         }
 
                         if (!exit)
-                            this.m_MiningState = MiningState.Approaching;
+                            m_MiningState = MiningState.Approaching;
 
                         break;
 
@@ -430,14 +431,14 @@ namespace Eve_Mining
                         {
                             Thread.Sleep(1000);
 
-                            if (!this.MiningIsAlive())
+                            if (!MiningIsAlive())
                                 return;
 
                             if (m.GetPixel(rW.X + rW.Width - 413, rW.Y + 154).Equals(Color.FromArgb(255, 255, 255)))
                                 break;
                         }
 
-                        this.m_MiningState = MiningState.Locking_target;
+                        m_MiningState = MiningState.Locking_target;
 
                         break;
 
@@ -447,30 +448,30 @@ namespace Eve_Mining
                         {
                             Thread.Sleep(1000);
 
-                            if (!this.MiningIsAlive())
+                            if (!MiningIsAlive())
                                 return;
                         }
 
                         m.LeftClickTo(rW.X + rW.Width - 413, rW.Y + 154);
 
-                        this.m_MiningState = MiningState.Fiering_lasers;
+                        m_MiningState = MiningState.Fiering_lasers;
 
                         break;
 
                     case MiningState.Fiering_lasers:
 
-                        if (this.Chk1.Checked)
+                        if (Chk1.Checked)
                             m.LeftClickTo(rW.X + iCx + 107, rW.Y + rC.Bottom - 145);
 
-                        if (this.Chk2.Checked)
+                        if (Chk2.Checked)
                             m.LeftClickTo(rW.X + iCx + 160, rW.Y + rC.Bottom - 145);
 
-                        if (this.Chk3.Checked)
+                        if (Chk3.Checked)
                             m.LeftClickTo(rW.X + iCx + 210, rW.Y + rC.Bottom - 145);
 
                         Thread.Sleep(3000);
 
-                        this.m_MiningState = MiningState.Mining;
+                        m_MiningState = MiningState.Mining;
 
                         break;
 
@@ -500,40 +501,40 @@ namespace Eve_Mining
 
                             Thread.Sleep(1000);
 
-                            if (!this.MiningIsAlive())
+                            if (!MiningIsAlive())
                                 return;
                         }
 
                         if (end)
                         {
-                            this.m_MiningState = MiningState.Selecting_target;
+                            m_MiningState = MiningState.Selecting_target;
 
                             break;
                         }
 
-                        this.m_MiningState = MiningState.Warping_to_station;
+                        m_MiningState = MiningState.Warping_to_station;
 
                         break;
 
                     case MiningState.Warping_to_station:
 
-                        this.m_MiningState = MiningState.Docking;
+                        m_MiningState = MiningState.Docking;
 
                         break;
 
                     case MiningState.Docking:
 
-                        this.OpenMainMenu(ref m, rW);
-                        this.WarpToStation(ref m, rW);
+                        OpenMainMenu(ref m, rW);
+                        WarpToStation(ref m, rW);
 
-                        this.m_iStation = 1;
+                        m_iStation = 1;
 
                         while (m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
                             m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF")))
                         {
                             Thread.Sleep(1000);
 
-                            if (!this.MiningIsAlive())
+                            if (!MiningIsAlive())
                                 return;
                         }
 
@@ -545,11 +546,11 @@ namespace Eve_Mining
                         {
                             Thread.Sleep(1000);
 
-                            if (!this.MiningIsAlive())
+                            if (!MiningIsAlive())
                                 return;
                         }
 
-                        this.m_MiningState = MiningState.Unloading;
+                        m_MiningState = MiningState.Unloading;
 
                         break;
 
@@ -564,7 +565,7 @@ namespace Eve_Mining
 
                         m.LeftDrag(rW.X + 289, rW.Y + 381, rW.Width - 214, 505);
 
-                        this.m_MiningState = MiningState.Cleaning_interface;
+                        m_MiningState = MiningState.Cleaning_interface;
 
                         break;
                     case MiningState.Cleaning_interface:
@@ -581,16 +582,16 @@ namespace Eve_Mining
                         Thread.Sleep(1000);
 
 
-                        this.m_iCycles++;
+                        m_iCycles++;
 
-                        this.m_MiningState = MiningState.Undocking;
+                        m_MiningState = MiningState.Undocking;
 
                         break;
                 }
 
                 Thread.Sleep(250);
 
-                this.m_MiningResetEvent.WaitOne();
+                m_MiningResetEvent.WaitOne();
             }
         }
 
@@ -605,7 +606,7 @@ namespace Eve_Mining
         private void WarpToBelt(ref Mouse _m, Rectangle _rW)
         {
             _m.LeftClickTo(_rW.X + 260, _rW.Y + 137);
-            _m.LeftClickTo(_rW.X + 500, _rW.Y + 127 + (21 * this.m_iBelt));
+            _m.LeftClickTo(_rW.X + 500, _rW.Y + 127 + (21 * m_iBelt));
 
             Thread.Sleep(5000);
         }
@@ -613,15 +614,15 @@ namespace Eve_Mining
         private void WarpToStation(ref Mouse _m, Rectangle _rW)
         {
             _m.LeftClickTo(_rW.X + 260, _rW.Y + 197);
-            _m.LeftClickTo(_rW.X + 450, _rW.Y + 187 + (21 * this.m_iStation));
+            _m.LeftClickTo(_rW.X + 450, _rW.Y + 187 + (21 * m_iStation));
 
             Thread.Sleep(5000);
         }
         private void WarpToPortal(ref Mouse _m, Rectangle _rW)
         {
             _m.LeftClickTo(_rW.X + 260, _rW.Y + 180);
-            _m.MoveTo(_rW.X + 400, _rW.Y + 170 + (21 * this.m_iPortal));
-            _m.LeftClickTo(_rW.X + 500, _rW.Y + 250 + (21 * this.m_iPortal) + 63);
+            _m.MoveTo(_rW.X + 400, _rW.Y + 170 + (21 * m_iPortal));
+            _m.LeftClickTo(_rW.X + 500, _rW.Y + 250 + (21 * m_iPortal) + 63);
 
             Thread.Sleep(5000);
         }
@@ -630,104 +631,104 @@ namespace Eve_Mining
         {
             Screen screen = Screen.FromHandle(GetEvehWnd());
 
-            this.Left = screen.WorkingArea.Right - this.Width;
-            this.Top = screen.WorkingArea.Bottom - this.Height;
-            this.TopMost = true;
-            this.Opacity = this.Opacity = .4;
+            Left = screen.WorkingArea.Right - Width;
+            Top = screen.WorkingArea.Bottom - Height;
+            TopMost = true;
+            Opacity = Opacity = .4;
 
-            this.m_BotState = BotState.Started;
-            this.m_MiningState = MiningState.Cleaning_interface;
+            m_BotState = BotState.Started;
+            m_MiningState = MiningState.Cleaning_interface;
 
-            this.m_MiningThread = new Thread(this.Mining)
+            m_MiningThread = new Thread(Mining)
             {
                 IsBackground = true
             };
-            this.m_MiningThread.Start();
+            m_MiningThread.Start();
 
-            if (!this.m_totalTime.IsRunning)
-                this.m_totalTime.Start();
+            if (!m_totalTime.IsRunning)
+                m_totalTime.Start();
         }
 
         private void MiningStop(BotState _botState)
         {
-            this.TopMost = false;
-            this.Opacity = 1;
+            TopMost = false;
+            Opacity = 1;
 
-            this.m_BotState = _botState;
-            this.m_MiningState = MiningState.Idle;
-            this.m_iCycles = 0;
-            this.m_iTries = 0;
-            this.m_iSelection = 0;
-            this.m_iStation = 1;
-            this.m_iBelt = 1;
+            m_BotState = _botState;
+            m_MiningState = MiningState.Idle;
+            m_iCycles = 0;
+            m_iTries = 0;
+            m_iSelection = 0;
+            m_iStation = 1;
+            m_iBelt = 1;
 
-            this.m_MiningResetEvent.Set();
+            m_MiningResetEvent.Set();
 
-            this.m_MiningThread?.Join();
+            m_MiningThread?.Join();
 
-            if (this.m_totalTime.IsRunning)
-                this.m_totalTime.Reset();
+            if (m_totalTime.IsRunning)
+                m_totalTime.Reset();
         }
 
         private void MiningPause()
         {
-            this.m_BotState = BotState.Suspended;
+            m_BotState = BotState.Suspended;
 
-            this.m_MiningResetEvent.Reset();
+            m_MiningResetEvent.Reset();
 
-            if (!this.m_totalTime.IsRunning)
-                this.m_totalTime.Stop();
+            if (!m_totalTime.IsRunning)
+                m_totalTime.Stop();
         }
 
         private void MiningResume()
         {
-            this.m_BotState = BotState.Started;
+            m_BotState = BotState.Started;
 
-            this.m_MiningResetEvent.Set();
+            m_MiningResetEvent.Set();
 
-            if (!this.m_totalTime.IsRunning)
-                this.m_totalTime.Start();
+            if (!m_totalTime.IsRunning)
+                m_totalTime.Start();
         }
 
         private void AnimateStatus()
         {
-            this.Status.Text = string.Concat(this.StatusStrip.Text, new string('.', this.m_iNumberOfDot));
+            Status.Text = string.Concat(StatusStrip.Text, new string('.', m_iNumberOfDot));
 
-            this.m_iNumberOfDot = (this.m_iNumberOfDot + 1) % (MAX_DOT + 1);
+            m_iNumberOfDot = (m_iNumberOfDot + 1) % (MAX_DOT + 1);
         }
 
         private void FrmGui_Load(object sender, EventArgs e)
         {
-            this.Chk1.Checked = Config.ReadBoolean("F1");
-            this.Chk2.Checked = Config.ReadBoolean("F2");
-            this.Chk3.Checked = Config.ReadBoolean("F3");
+            Chk1.Checked = Config.ReadBoolean("F1");
+            Chk2.Checked = Config.ReadBoolean("F2");
+            Chk3.Checked = Config.ReadBoolean("F3");
 
-            this.NumB.Value = Config.ReadDecimal("MaxBeltWarp", 1);
-            this.NumS.Value = Config.ReadDecimal("MaxStationWarp", 1);
+            NumB.Value = Config.ReadDecimal("MaxBeltWarp", 1);
+            NumS.Value = Config.ReadDecimal("MaxStationWarp", 1);
 
-            this.ChkPortal.Checked = Config.ReadBoolean("UsePortal");
+            ChkPortal.Checked = Config.ReadBoolean("UsePortal");
         }
 
         private void FrmGui_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Config.AddOrUpdate("F1", this.Chk1.Checked);
-            Config.AddOrUpdate("F2", this.Chk2.Checked);
-            Config.AddOrUpdate("F3", this.Chk3.Checked);
+            Config.AddOrUpdate("F1", Chk1.Checked);
+            Config.AddOrUpdate("F2", Chk2.Checked);
+            Config.AddOrUpdate("F3", Chk3.Checked);
 
-            Config.AddOrUpdate("MaxBeltWarp", this.NumB.Value);
-            Config.AddOrUpdate("MaxStationWarp", this.NumS.Value);
+            Config.AddOrUpdate("MaxBeltWarp", NumB.Value);
+            Config.AddOrUpdate("MaxStationWarp", NumS.Value);
 
-            Config.AddOrUpdate("UsePortal", this.ChkPortal.Checked);
+            Config.AddOrUpdate("UsePortal", ChkPortal.Checked);
         }
 
         private void NumB_ValueChanged(object sender, EventArgs e)
         {
-            this.m_iBeltCnt = Convert.ToInt32(this.NumB.Value);
+            m_iBeltCnt = Convert.ToInt32(NumB.Value);
         }
 
         private void NumS_ValueChanged(object sender, EventArgs e)
         {
-            this.m_iStationCnt = Convert.ToInt32(this.NumB.Value);
+            m_iStationCnt = Convert.ToInt32(NumB.Value);
 
         }
     }

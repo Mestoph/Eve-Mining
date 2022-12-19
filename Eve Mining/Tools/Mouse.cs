@@ -24,7 +24,7 @@ namespace Eve_Mining.Tools
 
         internal Mouse()
         {
-            this.m_hWnd = Process.GetCurrentProcess().MainWindowHandle;
+            m_hWnd = Process.GetCurrentProcess().MainWindowHandle;
         }
 
         #endregion
@@ -34,14 +34,14 @@ namespace Eve_Mining.Tools
         {
             get
             {
-                return this.m_iDelay;
+                return m_iDelay;
             }
             set
             {
                 if (value < 0)
                     return;
 
-                this.m_iDelay = value;
+                m_iDelay = value;
             }
         }
 
@@ -49,11 +49,11 @@ namespace Eve_Mining.Tools
         {
             get
             {
-                return this.m_bHiddenMode;
+                return m_bHiddenMode;
             }
             set
             {
-                this.m_bHiddenMode = value;
+                m_bHiddenMode = value;
             }
         }
 
@@ -64,13 +64,13 @@ namespace Eve_Mining.Tools
                 Api.GetCursorPos(out Point p);
 
                 if (p == null || p.IsEmpty)
-                    return new Point(this.m_iX, this.m_iY);
+                    return new Point(m_iX, m_iY);
 
-                if (this.m_iX != p.X)
-                    this.m_iX = p.X;
+                if (m_iX != p.X)
+                    m_iX = p.X;
 
-                if (this.m_iY != p.Y)
-                    this.m_iY = p.Y;
+                if (m_iY != p.Y)
+                    m_iY = p.Y;
 
                 return p;
             }
@@ -80,11 +80,11 @@ namespace Eve_Mining.Tools
         {
             get
             {
-                return this.BackReturn;
+                return BackReturn;
             }
             set
             {
-                this.m_bBackReturn = value;
+                m_bBackReturn = value;
             }
         }
 
@@ -97,15 +97,15 @@ namespace Eve_Mining.Tools
             if (_p == null)
                 return;
 
-            this.Move(_p.X, _p.Y);
+            Move(_p.X, _p.Y);
         }
 
         internal void Move(int _iDeltaX, int _iDeltaY)
         {
-            this.m_iX += _iDeltaX;
-            this.m_iY += _iDeltaY;
+            m_iX += _iDeltaX;
+            m_iY += _iDeltaY;
 
-            this.SendInput(this.GetInputs(_iDeltaX, _iDeltaY, Api.MouseEventF.Move));
+            SendInput(GetInputs(_iDeltaX, _iDeltaY, Api.MouseEventF.Move));
         }
 
         internal void MoveTo(Point _p)
@@ -113,15 +113,15 @@ namespace Eve_Mining.Tools
             if (_p == null)
                 return;
 
-            this.MoveTo(_p.X, _p.Y);
+            MoveTo(_p.X, _p.Y);
         }
 
         internal void MoveTo(int _iX, int _iY)
         {
-            this.m_iX = _iX;
-            this.m_iY = _iY;
+            m_iX = _iX;
+            m_iY = _iY;
 
-            this.SendInput(this.GetInputs(_iX, _iY, Api.MouseEventF.Absolute | Api.MouseEventF.Move));
+            SendInput(GetInputs(_iX, _iY, Api.MouseEventF.Absolute | Api.MouseEventF.Move));
         }
 
         internal void LeftClickTo(Point _p)
@@ -129,18 +129,18 @@ namespace Eve_Mining.Tools
             if (_p == null)
                 return;
 
-            this.LeftClickTo(_p.X, _p.Y);
+            LeftClickTo(_p.X, _p.Y);
         }
 
         internal void LeftClickTo(int _iX, int _iY)
         {
-            this.MoveTo(_iX, _iY);
-            this.LeftClick();
+            MoveTo(_iX, _iY);
+            LeftClick();
         }
 
         internal void LeftClick()
         {
-            this.SendInput(this.GetInputs(Api.MouseEventF.LeftDown, Api.MouseEventF.LeftUp));
+            SendInput(GetInputs(Api.MouseEventF.LeftDown, Api.MouseEventF.LeftUp));
         }
 
         internal void LeftDoubleClickTo(Point _p)
@@ -148,45 +148,45 @@ namespace Eve_Mining.Tools
             if (_p == null)
                 return;
 
-            this.LeftDoubleClickTo(_p.X, _p.Y);
+            LeftDoubleClickTo(_p.X, _p.Y);
         }
 
         internal void LeftDoubleClickTo(int _iX, int _iY)
         {
-            this.MoveTo(_iX, _iY);
-            this.LeftDoubleClick();
+            MoveTo(_iX, _iY);
+            LeftDoubleClick();
         }
 
         internal void LeftDoubleClick()
         {
-            this.LeftClick();
-            this.LeftClick();
+            LeftClick();
+            LeftClick();
         }
 
         internal void LeftDown()
         {
-            this.SendInput(this.GetInputs(Api.MouseEventF.LeftDown));
+            SendInput(GetInputs(Api.MouseEventF.LeftDown));
         }
 
         internal void LeftUp()
         {
-            this.SendInput(this.GetInputs(Api.MouseEventF.LeftUp));
+            SendInput(GetInputs(Api.MouseEventF.LeftUp));
         }
 
         internal void LeftDrag(Point _start, Point _end)
         {
-            this.LeftDrag(_start.X, _start.Y, _end.X, _end.Y);
+            LeftDrag(_start.X, _start.Y, _end.X, _end.Y);
         }
 
         internal void LeftDrag(int _iStartX, int _iStartY, int _iEndX, int _iEndY)
         {
-            this.MoveTo(_iStartX, _iStartY);
-            this.LeftDown();
+            MoveTo(_iStartX, _iStartY);
+            LeftDown();
 
             Thread.Sleep(100);
 
-            this.MoveTo(_iEndX, _iEndY);
-            this.LeftUp();
+            MoveTo(_iEndX, _iEndY);
+            LeftUp();
         }
 
         internal void RightClickTo(Point _p)
@@ -194,18 +194,18 @@ namespace Eve_Mining.Tools
             if (_p == null)
                 return;
 
-            this.RightClickTo(_p.X, _p.Y);
+            RightClickTo(_p.X, _p.Y);
         }
 
         internal void RightClickTo(int _iX, int _iY)
         {
-            this.MoveTo(_iX, _iY);
-            this.RightClick();
+            MoveTo(_iX, _iY);
+            RightClick();
         }
 
         internal void RightClick()
         {
-            this.SendInput(this.GetInputs(Api.MouseEventF.RightDown, Api.MouseEventF.RightUp));
+            SendInput(GetInputs(Api.MouseEventF.RightDown, Api.MouseEventF.RightUp));
         }
 
         internal void RightDoubleClickTo(Point _p)
@@ -213,65 +213,65 @@ namespace Eve_Mining.Tools
             if (_p == null)
                 return;
 
-            this.RightDoubleClickTo(_p.X, _p.Y);
+            RightDoubleClickTo(_p.X, _p.Y);
         }
 
         internal void RightDoubleClickTo(int _iX, int _iY)
         {
-            this.MoveTo(_iX, _iY);
-            this.RightDoubleClick();
+            MoveTo(_iX, _iY);
+            RightDoubleClick();
         }
 
         internal void RightDoubleClick()
         {
-            this.RightClick();
-            this.RightClick();
+            RightClick();
+            RightClick();
         }
 
         internal void RightDown()
         {
-            this.SendInput(this.GetInputs(Api.MouseEventF.RightDown));
+            SendInput(GetInputs(Api.MouseEventF.RightDown));
         }
 
         internal void RightUp()
         {
-            this.SendInput(this.GetInputs(Api.MouseEventF.RightUp));
+            SendInput(GetInputs(Api.MouseEventF.RightUp));
         }
 
         internal void RightDrag(Point _start, Point _end)
         {
-            this.RightDrag(_start.X, _start.Y, _end.X, _end.Y);
+            RightDrag(_start.X, _start.Y, _end.X, _end.Y);
         }
 
         internal void RightDrag(int _iStartX, int _iStartY, int _iEndX, int _iEndY)
         {
-            this.MoveTo(_iStartX, _iStartY);
-            this.LeftDown();
+            MoveTo(_iStartX, _iStartY);
+            LeftDown();
 
             Thread.Sleep(100);
 
-            this.MoveTo(_iEndX, _iEndY);
-            this.LeftUp();
+            MoveTo(_iEndX, _iEndY);
+            LeftUp();
         }
 
         internal Color GetPixel()
         {
-            return this.GetPixel(IntPtr.Zero);
+            return GetPixel(IntPtr.Zero);
         }
 
         internal Color GetPixel(int _iX, int _iY)
         {
-            return this.GetPixel(IntPtr.Zero, _iX, _iY);
+            return GetPixel(IntPtr.Zero, _iX, _iY);
         }
 
         internal Color GetPixel(IntPtr _hWnd)
         {
-            return this.GetPixel(_hWnd, this.m_iX, this.m_iY);
+            return GetPixel(_hWnd, m_iX, m_iY);
         }
 
         internal Color GetPixel(IntPtr _hWnd, int _iX, int _iY)
         {
-            uint pixel = this.GetPixelUint(_hWnd, _iX, _iY);
+            uint pixel = GetPixelUint(_hWnd, _iX, _iY);
 
             Color color = Color.FromArgb((int)(pixel & 0x000000FF),
                 (int)(pixel & 0x0000FF00) >> 8,
@@ -282,18 +282,18 @@ namespace Eve_Mining.Tools
 
         internal uint GetPixelUint()
         {
-            return this.GetPixelUint(IntPtr.Zero);
+            return GetPixelUint(IntPtr.Zero);
         }
 
         internal uint GetPixelUint(int _iX, int _iY)
         {
-            return this.GetPixelUint(IntPtr.Zero, _iX, _iY);
+            return GetPixelUint(IntPtr.Zero, _iX, _iY);
         }
 
         internal uint GetPixelUint(IntPtr _hWnd)
         {
             IntPtr hdc = Api.GetDC(_hWnd);
-            uint pixel = Api.GetPixel(hdc, this.m_iX, this.m_iY);
+            uint pixel = Api.GetPixel(hdc, m_iX, m_iY);
 
             Api.ReleaseDC(_hWnd, hdc);
 
@@ -302,24 +302,24 @@ namespace Eve_Mining.Tools
 
         internal uint GetPixelUint(IntPtr _hWnd, int _iX, int _iY)
         {
-            Point p = this.Position;
+            Point p = Position;
 
-            this.MoveTo(_iX, _iY);
+            MoveTo(_iX, _iY);
 
             IntPtr hdc = Api.GetDC(_hWnd);
             uint pixel = Api.GetPixel(hdc, _iX, _iY);
 
             Api.ReleaseDC(_hWnd, hdc);
 
-            if (this.m_bBackReturn)
-                this.MoveTo(p.X, p.Y);
+            if (m_bBackReturn)
+                MoveTo(p.X, p.Y);
 
             return pixel;
         }
 
         private Api.Input[] GetInputs(params Api.MouseEventF[] _events)
         {
-            return this.GetInputs(0, 0, _events);
+            return GetInputs(0, 0, _events);
         }
 
         private Api.Input[] GetInputs(int _iX, int _iY, params Api.MouseEventF[] _events)
@@ -335,8 +335,8 @@ namespace Eve_Mining.Tools
                     {
                         mi = new Api.MouseInput
                         {
-                            dx = this.CalculateAbsoluteCoordinateX(_iX),
-                            dy = this.CalculateAbsoluteCoordinateY(_iY),
+                            dx = CalculateAbsoluteCoordinateX(_iX),
+                            dy = CalculateAbsoluteCoordinateY(_iY),
                             dwFlags = (uint)(_events[i]),
                             dwExtraInfo = Api.GetMessageExtraInfo(),
 
@@ -350,41 +350,41 @@ namespace Eve_Mining.Tools
 
         private uint SendInput(Api.Input[] _inputs)
         {
-            this.Hide();
+            Hide();
 
             uint r = Api.SendInput((uint)_inputs.Length, _inputs, Marshal.SizeOf(typeof(Api.Input)));
 
-            Thread.Sleep(this.m_iDelay);
+            Thread.Sleep(m_iDelay);
 
-            this.UnHide();
+            UnHide();
 
             return r;
         }
 
         private void Hide()
         {
-            if (!this.m_bHiddenMode)
+            if (!m_bHiddenMode)
                 return;
 
-            if (this.m_bHidden)
+            if (m_bHidden)
                 return;
 
-            Api.ShowWindow(this.m_hWnd, Api.SW_HIDE);
+            Api.ShowWindow(m_hWnd, Api.SW_HIDE);
 
-            this.m_bHidden = true;
+            m_bHidden = true;
         }
 
         private void UnHide()
         {
-            if (!this.m_bHiddenMode)
+            if (!m_bHiddenMode)
                 return;
 
-            if (!this.m_bHidden)
+            if (!m_bHidden)
                 return;
 
-            Api.ShowWindow(this.m_hWnd, Api.SW_SHOW);
+            Api.ShowWindow(m_hWnd, Api.SW_SHOW);
 
-            this.m_bHidden = false;
+            m_bHidden = false;
         }
 
         private int CalculateAbsoluteCoordinateX(int _iX)
