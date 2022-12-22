@@ -9,7 +9,7 @@ namespace Eve_Mining.Tools
         #region Variables
 
         private static readonly NameValueCollection m_settings = ConfigurationManager.AppSettings;
-        private static bool m_bAutoSave = false;
+        private static bool m_bAutoSave = true;
 
         #endregion
         #region Getters/Setters
@@ -352,7 +352,10 @@ namespace Eve_Mining.Tools
                 s[_sKey].Value = Convert.ToString(_o);
 
             if (m_bAutoSave)
-                Save();
+            {
+                c.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(c.AppSettings.SectionInformation.Name);
+            }
 
             return true;
         }
@@ -368,7 +371,10 @@ namespace Eve_Mining.Tools
             s.Remove(_sKey);
 
             if (m_bAutoSave)
-                Save();
+            {
+                c.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(c.AppSettings.SectionInformation.Name);
+            }
 
             return true;
         }
@@ -377,7 +383,8 @@ namespace Eve_Mining.Tools
         {
             var c = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
-            c.Save(ConfigurationSaveMode.Modified);
+            c.Save(ConfigurationSaveMode.Full);
+
             ConfigurationManager.RefreshSection(c.AppSettings.SectionInformation.Name);
         }
 

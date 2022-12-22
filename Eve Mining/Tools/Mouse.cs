@@ -302,17 +302,17 @@ namespace Eve_Mining.Tools
 
         internal uint GetPixelUint(IntPtr _hWnd, int _iX, int _iY)
         {
-            Point p = this.Position;
+            //Point p = this.Position;
 
-            this.MoveTo(_iX, _iY);
+            //this.MoveTo(_iX, _iY);
 
             IntPtr hdc = Api.GetDC(_hWnd);
             uint pixel = Api.GetPixel(hdc, _iX, _iY);
 
             Api.ReleaseDC(_hWnd, hdc);
 
-            if (this.m_bBackReturn)
-                this.MoveTo(p.X, p.Y);
+            //if (this.m_bBackReturn)
+            //    this.MoveTo(p.X, p.Y);
 
             return pixel;
         }

@@ -631,6 +631,13 @@ namespace Eve_Mining
 
         private void MiningStart()
         {
+            if (!this.Chk1.Checked && !this.Chk2.Checked && !this.Chk3.Checked)
+            {
+                MessageBox.Show("Extractor(s) not checked ! The bot can't start...", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                
+                return;
+            }
+
             Screen screen = Screen.FromHandle(GetEvehWnd());
 
             this.Left = screen.WorkingArea.Right - this.Width;
