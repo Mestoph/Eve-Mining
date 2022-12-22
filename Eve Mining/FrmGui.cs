@@ -269,7 +269,7 @@ namespace Eve_Mining
 
         private bool MiningIsAlive()
         {
-            if (this.m_BotState == BotState.Waiting || this.m_BotState == BotState.Stopped || this.m_BotState == BotState.None)
+            if (this.m_BotState == BotState.Waiting || this.m_BotState == BotState.Stopped || this.m_BotState == BotState.None || this.m_BotState == BotState.Suspended)
                 return false;
 
             return true;
