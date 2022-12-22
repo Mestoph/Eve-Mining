@@ -432,6 +432,9 @@ namespace Eve_Mining.Windows
         [DllImport("dwmapi.dll", SetLastError = true)]
         internal static extern int DwmGetWindowAttribute(IntPtr _hWnd, int _dwAttribute, out Rect _pvAttribute, int _cbAttribute);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern IntPtr WindowFromPoint(Point _lpPoint);
+
         #endregion
         internal static Rectangle GetWindowRect(IntPtr _hWnd)
         {

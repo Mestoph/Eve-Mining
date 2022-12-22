@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -576,6 +577,7 @@ namespace Eve_Mining
 
                         m.LeftClickTo(rW.X + 25, rW.Y + 25);
                         m.LeftClickTo(rW.X + 80, rW.Y + 588);
+                        m.LeftClickTo(rW.X + 1080, rW.Y + 170);
                         m.LeftClickTo(rW.X + iCx + 102, rW.Y + iCy - 256);
                         Thread.Sleep(1000);
                         m.LeftClickTo(rW.X + iCx + 15, rW.Y + iCy + 307);
