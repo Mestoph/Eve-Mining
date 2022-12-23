@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -56,7 +55,7 @@ namespace Eve_Mining
         private int m_iNumberOfDot = 0;
         private int m_iBelt = 1;
         private int m_iStation = 1;
-        private int m_iPortal = 1;
+        private readonly int m_iPortal = 1;
         private int m_iBeltCnt = 1;
         private int m_iStationCnt = 1;
         private int m_iCycles = 0;
@@ -69,6 +68,8 @@ namespace Eve_Mining
         public FrmGui()
         {
             InitializeComponent();
+
+            this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
             Api.RegisterHotKey(this.Handle, START_HOTKEY_ID, Api.MOD_ALT, (int)Keys.F2);
             Api.RegisterHotKey(this.Handle, PAUSE_HOTKEY_ID, Api.MOD_ALT, (int)Keys.F3);
@@ -269,7 +270,7 @@ namespace Eve_Mining
 
         private bool MiningIsAlive()
         {
-            if (this.m_BotState == BotState.Waiting || this.m_BotState == BotState.Stopped || this.m_BotState == BotState.None || this.m_BotState == BotState.Suspended)
+            if (this.m_BotState == BotState.Waiting || this.m_BotState == BotState.Stopped || this.m_BotState == BotState.None)
                 return false;
 
             return true;
@@ -288,307 +289,314 @@ namespace Eve_Mining
                 if (!this.MiningIsAlive())
                     return;
 
-                IntPtr hWnd = GetEvehWnd();
-
-                if (hWnd == IntPtr.Zero)
-                    return;
-
-                if (!Api.ShowWindow(hWnd, Api.SW_SHOWMAXIMIZED))
-                    return;
-
-                if (!Api.SetForegroundWindow(hWnd))
-                    return;
-
-                if (!Api.GetClientRect(hWnd, out Api.Rect rC))
-                    return;
-
-                Rectangle rW = Api.GetWindowRect(hWnd);
-                if (rW.IsEmpty)
-                    return;
-
-                rW.Y = rW.Bottom - rC.Bottom - 1;
-                int iCx = rC.Right / 2;
-                int iCy = rC.Bottom / 2;
-
-
-                m.LeftClickTo(rW.X + iCx - 98, rW.Y + rC.Bottom - 85);
-
-                switch (this.m_MiningState)
+                if (this.m_BotState == BotState.Started)
                 {
-                    case MiningState.Idle:
+                    IntPtr hWnd = GetEvehWnd();
 
-                        this.m_MiningState = MiningState.Undocking;
+                    if (hWnd == IntPtr.Zero)
+                        return;
 
-                        break;
+                    if (!Api.ShowWindow(hWnd, Api.SW_SHOWMAXIMIZED))
+                        return;
 
-                    case MiningState.Undocking:
+                    if (!Api.SetForegroundWindow(hWnd))
+                        return;
 
-                        m.RightClickTo(rW.X + iCx, rW.Y + iCy);
-                        m.LeftClickTo((rW.X + iCx) + 50, (rW.Y + iCy) + 15);
+                    if (!Api.GetClientRect(hWnd, out Api.Rect rC))
+                        return;
 
-                        while (!m.GetPixel(rW.X + 62, rW.Y + 85).Equals(Color.FromArgb(255, 255, 255)))
-                        {
-                            Thread.Sleep(1000);
+                    Rectangle rW = Api.GetWindowRect(hWnd);
+                    if (rW.IsEmpty)
+                        return;
 
-                            if (!this.MiningIsAlive())
-                                return;
-                        }
+                    rW.Y = rW.Bottom - rC.Bottom - 1;
+                    int iCx = rC.Right / 2;
+                    int iCy = rC.Bottom / 2;
 
-                        this.m_MiningState = MiningState.Warping_to_belt;
 
-                        break;
+                    m.LeftClickTo(rW.X + iCx - 98, rW.Y + rC.Bottom - 85);
 
-                    case MiningState.Warping_to_belt:
+                    switch (this.m_MiningState)
+                    {
+                        case MiningState.Idle:
 
-                        this.OpenMainMenu(ref m, rW);
-                        this.WarpToBelt(ref m, rW);
+                            this.m_MiningState = MiningState.Undocking;
 
-                        while (m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
-                            m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF")))
-                        {
-                            Thread.Sleep(1000);
+                            break;
 
-                            if (!this.MiningIsAlive())
-                                return;
-                        }
+                        case MiningState.Undocking:
 
-                        this.m_MiningState = MiningState.Selecting_target;
+                            m.RightClickTo(rW.X + iCx, rW.Y + iCy);
+                            m.LeftClickTo((rW.X + iCx) + 50, (rW.Y + iCy) + 15);
 
-                        break;
-
-                    case MiningState.Warping_to_portal:
-
-                        this.OpenMainMenu(ref m, rW);
-                        this.WarpToPortal(ref m, rW);
-
-                        break;
-
-                    case MiningState.Selecting_target:
-                        bool exit = false;
-
-                        m.LeftClickTo(rW.X + rW.Width - 395, rW.Y + 237);
-                        m.LeftClickTo(rW.X + rW.Width - 395, rW.Y + 292 + (24 * this.m_iSelection));
-
-                        while (!m.GetPixel(rW.X + rW.Width - 546, rW.Y + 163).Equals(Color.FromArgb(255, 255, 255))
-                            || (m.GetPixel(rW.X + rW.Width - 555, rW.Y + 295 + (24 * this.m_iSelection)).Equals(Color.FromArgb(255, 255, 255)) &&
-                                m.GetPixel(rW.X + rW.Width - 555, rW.Y + 299 + (24 * this.m_iSelection)).Equals(Color.FromArgb(255, 255, 255))))
-                        {
-                            Thread.Sleep(250);
-
-                            if (!this.MiningIsAlive())
-                                return;
-
-                            if (this.m_iTries < MAX_TRIES)
+                            while (!m.GetPixel(rW.X + 62, rW.Y + 85).Equals(Color.FromArgb(255, 255, 255)))
                             {
-                                bool portal = false;
+                                Thread.Sleep(1000);
 
-                                if (this.m_iSelection++ > MAX_SELECTIONS)
-                                {
-                                    this.m_iSelection = 0;
-
-                                    this.m_iBelt++;
-
-                                    if (this.m_iBelt > this.m_iBeltCnt)
-                                    {
-                                        this.m_iTries++;
-
-                                        this.m_iBelt = 1;
-                                    }
-
-                                    this.m_iStation++;
-                                    if (this.m_iStation > this.m_iStationCnt)
-                                    {
-                                        this.m_iStation = 1;
-
-                                        if (this.ChkPortal.Checked)
-                                            portal = true;
-                                    }
-
-                                    if (portal)
-                                        this.m_MiningState = MiningState.Warping_to_portal;
-                                    else
-                                        this.m_MiningState = MiningState.Warping_to_station;
-                                }
-
-                                exit = true;
-
-                                break;
+                                if (!this.MiningIsAlive())
+                                    return;
                             }
 
-                            m.LeftClickTo(rW.X + rW.Width - 395, rW.Y + 294 + (22 * this.m_iSelection));
-                        }
+                            this.m_MiningState = MiningState.Warping_to_belt;
 
-                        if (!exit)
-                            this.m_MiningState = MiningState.Approaching;
+                            break;
 
-                        break;
+                        case MiningState.Warping_to_belt:
 
-                    case MiningState.Approaching:
+                            this.OpenMainMenu(ref m, rW);
+                            this.WarpToBelt(ref m, rW);
 
-                        m.LeftClickTo(rW.X + rW.Width - 546, rW.Y + 163);
-
-                        while (m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
-                            m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF")))
-                        {
-                            Thread.Sleep(1000);
-
-                            if (!this.MiningIsAlive())
-                                return;
-
-                            if (m.GetPixel(rW.X + rW.Width - 413, rW.Y + 154).Equals(Color.FromArgb(255, 255, 255)))
-                                break;
-                        }
-
-                        this.m_MiningState = MiningState.Locking_target;
-
-                        break;
-
-                    case MiningState.Locking_target:
-
-                        while (!m.GetPixel(rW.X + rW.Width - 413, rW.Y + 154).Equals(Color.FromArgb(255, 255, 255)))
-                        {
-                            Thread.Sleep(1000);
-
-                            if (!this.MiningIsAlive())
-                                return;
-                        }
-
-                        m.LeftClickTo(rW.X + rW.Width - 413, rW.Y + 154);
-
-                        this.m_MiningState = MiningState.Fiering_lasers;
-
-                        break;
-
-                    case MiningState.Fiering_lasers:
-
-                        if (this.Chk1.Checked)
-                            m.LeftClickTo(rW.X + iCx + 107, rW.Y + rC.Bottom - 145);
-
-                        if (this.Chk2.Checked)
-                            m.LeftClickTo(rW.X + iCx + 160, rW.Y + rC.Bottom - 145);
-
-                        if (this.Chk3.Checked)
-                            m.LeftClickTo(rW.X + iCx + 210, rW.Y + rC.Bottom - 145);
-
-                        Thread.Sleep(3000);
-
-                        this.m_MiningState = MiningState.Mining;
-
-                        break;
-
-                    case MiningState.Mining:
-
-                        // Open inventory
-                        m.RightClickTo(rW.X + iCx, rW.Y + iCy);
-                        m.LeftClickTo((rW.X + iCx) + 50, (rW.Y + iCy) + 15);
-                        m.RightClickTo(rW.X + iCx, rW.Y + iCy);
-                        m.LeftClickTo((rW.X + iCx) + 50, (rW.Y + iCy) + 295);
-
-                        bool end = false;
-
-                        bool f = m.GetPixel(rW.X + 335, rW.Y + 321).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
-                            m.GetPixel(rW.X + 335, rW.Y + 321).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF"));
-                        bool s = m.GetPixel(rW.X + 540, rW.Y + 321).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
-                            m.GetPixel(rW.X + 540, rW.Y + 321).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF"));
-
-                        while (!f || f != s)
-                        {
-                            if (!m.GetPixel(rW.X + rW.Width - 413, rW.Y + 154).Equals(Color.FromArgb(255, 255, 255)))
+                            while (m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
+                                m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF")))
                             {
-                                end = true;
+                                Thread.Sleep(1000);
 
-                                break;
+                                if (!this.MiningIsAlive())
+                                    return;
                             }
 
-                            Thread.Sleep(1000);
-
-                            if (!this.MiningIsAlive())
-                                return;
-                        }
-
-                        if (end)
-                        {
                             this.m_MiningState = MiningState.Selecting_target;
 
                             break;
-                        }
 
-                        this.m_MiningState = MiningState.Warping_to_station;
+                        case MiningState.Warping_to_portal:
 
-                        break;
+                            this.OpenMainMenu(ref m, rW);
+                            this.WarpToPortal(ref m, rW);
 
-                    case MiningState.Warping_to_station:
+                            break;
 
-                        this.m_MiningState = MiningState.Docking;
+                        case MiningState.Selecting_target:
+                            bool exit = false;
 
-                        break;
+                            m.LeftClickTo(rW.X + rW.Width - 395, rW.Y + 237);
+                            m.LeftClickTo(rW.X + rW.Width - 395, rW.Y + 292 + (24 * this.m_iSelection));
 
-                    case MiningState.Docking:
+                            while (!m.GetPixel(rW.X + rW.Width - 546, rW.Y + 163).Equals(Color.FromArgb(255, 255, 255))
+                                || (m.GetPixel(rW.X + rW.Width - 555, rW.Y + 295 + (24 * this.m_iSelection)).Equals(Color.FromArgb(255, 255, 255)) &&
+                                    m.GetPixel(rW.X + rW.Width - 555, rW.Y + 299 + (24 * this.m_iSelection)).Equals(Color.FromArgb(255, 255, 255)))
+                                || m.GetPixel(rW.X + rW.Width - 556, rW.Y + 297 + (24 * this.m_iSelection)).Equals(Color.FromArgb(255, 255, 255)))
+                            {
 
-                        this.OpenMainMenu(ref m, rW);
-                        this.WarpToStation(ref m, rW);
 
-                        this.m_iStation = 1;
+                                Thread.Sleep(250);
 
-                        while (m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
-                            m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF")))
-                        {
+                                if (!this.MiningIsAlive())
+                                    return;
+
+                                if (this.m_iTries < MAX_TRIES)
+                                {
+                                    bool portal = false;
+
+                                    if (this.m_iSelection++ > MAX_SELECTIONS)
+                                    {
+                                        this.m_iSelection = 0;
+
+                                        this.m_iBelt++;
+
+                                        if (this.m_iBelt > this.m_iBeltCnt)
+                                        {
+                                            this.m_iTries++;
+
+                                            this.m_iBelt = 1;
+                                        }
+
+                                        this.m_iStation++;
+                                        if (this.m_iStation > this.m_iStationCnt)
+                                        {
+                                            this.m_iStation = 1;
+
+                                            if (this.ChkPortal.Checked)
+                                                portal = true;
+                                        }
+
+                                        if (portal)
+                                            this.m_MiningState = MiningState.Warping_to_portal;
+                                        else
+                                            this.m_MiningState = MiningState.Warping_to_station;
+                                    }
+
+                                    exit = true;
+
+                                    break;
+                                }
+
+                                m.LeftClickTo(rW.X + rW.Width - 395, rW.Y + 294 + (22 * this.m_iSelection));
+                            }
+
+                            if (!exit)
+                                this.m_MiningState = MiningState.Approaching;
+
+                            break;
+
+                        case MiningState.Approaching:
+
+                            m.LeftClickTo(rW.X + rW.Width - 546, rW.Y + 163);
+
+                            while (m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
+                                m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF")))
+                            {
+                                Thread.Sleep(1000);
+
+                                if (!this.MiningIsAlive())
+                                    return;
+
+                                if (m.GetPixel(rW.X + rW.Width - 413, rW.Y + 154).Equals(Color.FromArgb(255, 255, 255)))
+                                    break;
+                            }
+
+                            this.m_MiningState = MiningState.Locking_target;
+
+                            break;
+
+                        case MiningState.Locking_target:
+                            m.GetPixel(rW.X + rW.Width - 413, rW.Y + 154).BasedColorFromHue24();
+                            while (!m.GetPixel(rW.X + rW.Width - 413, rW.Y + 154).Equals(Color.FromArgb(255, 255, 255)))
+                            {
+                                Thread.Sleep(1000);
+
+                                if (!this.MiningIsAlive())
+                                    return;
+                            }
+
+                            m.LeftClickTo(rW.X + rW.Width - 413, rW.Y + 154);
+
+                            this.m_MiningState = MiningState.Fiering_lasers;
+
+                            break;
+
+                        case MiningState.Fiering_lasers:
+
+                            if (this.Chk1.Checked)
+                                m.LeftClickTo(rW.X + iCx + 107, rW.Y + rC.Bottom - 145);
+
+                            if (this.Chk2.Checked)
+                                m.LeftClickTo(rW.X + iCx + 160, rW.Y + rC.Bottom - 145);
+
+                            if (this.Chk3.Checked)
+                                m.LeftClickTo(rW.X + iCx + 210, rW.Y + rC.Bottom - 145);
+
+                            Thread.Sleep(3000);
+
+                            this.m_MiningState = MiningState.Mining;
+
+                            break;
+
+                        case MiningState.Mining:
+
+                            // Open inventory
+                            m.RightClickTo(rW.X + iCx, rW.Y + iCy);
+                            m.LeftClickTo((rW.X + iCx) + 50, (rW.Y + iCy) + 15);
+                            m.RightClickTo(rW.X + iCx, rW.Y + iCy);
+                            m.LeftClickTo((rW.X + iCx) + 50, (rW.Y + iCy) + 295);
+
+                            bool end = false;
+
+                            bool f = m.GetPixel(rW.X + 335, rW.Y + 321).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
+                                m.GetPixel(rW.X + 335, rW.Y + 321).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF"));
+                            bool s = m.GetPixel(rW.X + 540, rW.Y + 321).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
+                                m.GetPixel(rW.X + 540, rW.Y + 321).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF"));
+
+                            while (!f || f != s)
+                            {
+                                if (!m.GetPixel(rW.X + rW.Width - 413, rW.Y + 154).Equals(Color.FromArgb(255, 255, 255)))
+                                {
+                                    end = true;
+
+                                    break;
+                                }
+
+                                Thread.Sleep(1000);
+
+                                if (!this.MiningIsAlive())
+                                    return;
+                            }
+
+                            if (end)
+                            {
+                                this.m_MiningState = MiningState.Selecting_target;
+
+                                break;
+                            }
+
+                            this.m_MiningState = MiningState.Warping_to_station;
+
+                            break;
+
+                        case MiningState.Warping_to_station:
+
+                            this.m_MiningState = MiningState.Docking;
+
+                            break;
+
+                        case MiningState.Docking:
+
+                            this.OpenMainMenu(ref m, rW);
+                            this.WarpToStation(ref m, rW);
+
+                            this.m_iStation = 1;
+
+                            while (m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
+                                m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF")))
+                            {
+                                Thread.Sleep(1000);
+
+                                if (!this.MiningIsAlive())
+                                    return;
+                            }
+
+                            m.LeftClickTo(rW.X + rW.Width - 554, rW.Y + 233);
+                            m.LeftClickTo(rW.X + rW.Width - 424, rW.Y + 292);
+                            m.LeftClickTo(rW.X + rW.Width - 482, rW.Y + 163);
+
+                            while (!m.GetPixel(rW.X + rW.Width - 43, rW.Y + 30).Equals(Color.FromArgb(255, 255, 255)))
+                            {
+                                Thread.Sleep(1000);
+
+                                if (!this.MiningIsAlive())
+                                    return;
+                            }
+
+                            this.m_MiningState = MiningState.Unloading;
+
+                            break;
+
+                        case MiningState.Unloading:
+
+                            m.LeftClickTo(rW.X + rW.Width - 36, rW.Y + 390);
+                            m.RightClickTo(rW.X + iCx, rW.Y + iCy);
+                            m.LeftClickTo(rW.X + iCx + 50, (rW.Y + iCy) + 200);
+
+                            m.RightClickTo(rW.X + 331, rW.Y + 376);
+                            m.LeftClickTo(rW.X + 376, rW.Y + 396);
+
+                            Thread.Sleep(1000);
+                            m.LeftDrag(rW.X + 289, rW.Y + 381, rW.Width - 214, 505);
+
+                            this.m_MiningState = MiningState.Cleaning_interface;
+
+                            break;
+                        case MiningState.Cleaning_interface:
+                            m.LeftClickTo(rW.X + 662, rW.Y + 225);
+                            m.LeftClickTo(rW.X + rW.Width - 120, rW.Y + 217);
+
+                            //Thread.Sleep(10000);
+
+                            m.LeftClickTo(rW.X + 25, rW.Y + 25);
+                            m.LeftClickTo(rW.X + 80, rW.Y + 588);
+                            m.LeftClickTo(rW.X + iCx + 225, rW.Y + iCy - 325);
+                            m.LeftClickTo(rW.X + iCx + 102, rW.Y + iCy - 256);
+                            Thread.Sleep(1000);
+                            m.LeftClickTo(rW.X + iCx + 15, rW.Y + iCy + 307);
                             Thread.Sleep(1000);
 
-                            if (!this.MiningIsAlive())
-                                return;
-                        }
 
-                        m.LeftClickTo(rW.X + rW.Width - 554, rW.Y + 233);
-                        m.LeftClickTo(rW.X + rW.Width - 424, rW.Y + 292);
-                        m.LeftClickTo(rW.X + rW.Width - 482, rW.Y + 163);
+                            this.m_iCycles++;
 
-                        while (!m.GetPixel(rW.X + rW.Width - 43, rW.Y + 30).Equals(Color.FromArgb(255, 255, 255)))
-                        {
-                            Thread.Sleep(1000);
+                            this.m_MiningState = MiningState.Undocking;
 
-                            if (!this.MiningIsAlive())
-                                return;
-                        }
-
-                        this.m_MiningState = MiningState.Unloading;
-
-                        break;
-
-                    case MiningState.Unloading:
-
-                        m.LeftClickTo(rW.X + rW.Width - 36, rW.Y + 390);
-                        m.RightClickTo(rW.X + iCx, rW.Y + iCy);
-                        m.LeftClickTo(rW.X + iCx + 50, (rW.Y + iCy) + 200);
-
-                        m.RightClickTo(rW.X + 331, rW.Y + 376);
-                        m.LeftClickTo(rW.X + 376, rW.Y + 396);
-
-                        m.LeftDrag(rW.X + 289, rW.Y + 381, rW.Width - 214, 505);
-
-                        this.m_MiningState = MiningState.Cleaning_interface;
-
-                        break;
-                    case MiningState.Cleaning_interface:
-                        m.LeftClickTo(rW.X + 662, rW.Y + 225);
-                        m.LeftClickTo(rW.X + rW.Width - 120, rW.Y + 217);
-
-                        Thread.Sleep(10000);
-
-                        m.LeftClickTo(rW.X + 25, rW.Y + 25);
-                        m.LeftClickTo(rW.X + 80, rW.Y + 588);
-                        m.LeftClickTo(rW.X + 1080, rW.Y + 170);
-                        m.LeftClickTo(rW.X + iCx + 102, rW.Y + iCy - 256);
-                        Thread.Sleep(1000);
-                        m.LeftClickTo(rW.X + iCx + 15, rW.Y + iCy + 307);
-                        Thread.Sleep(1000);
-
-
-                        this.m_iCycles++;
-
-                        this.m_MiningState = MiningState.Undocking;
-
-                        break;
+                            break;
+                    }
                 }
 
                 Thread.Sleep(250);
@@ -634,7 +642,7 @@ namespace Eve_Mining
             if (!this.Chk1.Checked && !this.Chk2.Checked && !this.Chk3.Checked)
             {
                 MessageBox.Show("Extractor(s) not checked ! The bot can't start...", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                
+
                 return;
             }
 
@@ -685,7 +693,7 @@ namespace Eve_Mining
 
             this.m_MiningResetEvent.Reset();
 
-            if (!this.m_totalTime.IsRunning)
+            if (this.m_totalTime.IsRunning)
                 this.m_totalTime.Stop();
         }
 

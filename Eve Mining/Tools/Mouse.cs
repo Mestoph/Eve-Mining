@@ -259,14 +259,20 @@ namespace Eve_Mining.Tools
             return this.GetPixel(IntPtr.Zero);
         }
 
+        internal Color GetPixel(IntPtr _hWnd)
+        {
+            uint pixel = this.GetPixelUint(_hWnd);
+
+            Color color = Color.FromArgb((int)(pixel & 0x000000FF),
+                (int)(pixel & 0x0000FF00) >> 8,
+                (int)(pixel & 0x00FF0000) >> 16);
+
+            return color;
+        }
+
         internal Color GetPixel(int _iX, int _iY)
         {
             return this.GetPixel(IntPtr.Zero, _iX, _iY);
-        }
-
-        internal Color GetPixel(IntPtr _hWnd)
-        {
-            return this.GetPixel(_hWnd, this.m_iX, this.m_iY);
         }
 
         internal Color GetPixel(IntPtr _hWnd, int _iX, int _iY)
@@ -284,35 +290,36 @@ namespace Eve_Mining.Tools
         {
             return this.GetPixelUint(IntPtr.Zero);
         }
-
-        internal uint GetPixelUint(int _iX, int _iY)
-        {
-            return this.GetPixelUint(IntPtr.Zero, _iX, _iY);
-        }
-
         internal uint GetPixelUint(IntPtr _hWnd)
         {
+            Point p = this.Position;
+
             IntPtr hdc = Api.GetDC(_hWnd);
-            uint pixel = Api.GetPixel(hdc, this.m_iX, this.m_iY);
+            uint pixel = Api.GetPixel(hdc, p.X, p.Y);
 
             Api.ReleaseDC(_hWnd, hdc);
 
             return pixel;
         }
 
+        internal uint GetPixelUint(int _iX, int _iY)
+        {
+            return this.GetPixelUint(IntPtr.Zero, _iX, _iY);
+        }
+
         internal uint GetPixelUint(IntPtr _hWnd, int _iX, int _iY)
         {
-            //Point p = this.Position;
+            Point p = this.Position;
 
-            //this.MoveTo(_iX, _iY);
+            this.MoveTo(_iX, _iY);
 
             IntPtr hdc = Api.GetDC(_hWnd);
             uint pixel = Api.GetPixel(hdc, _iX, _iY);
 
             Api.ReleaseDC(_hWnd, hdc);
 
-            //if (this.m_bBackReturn)
-            //    this.MoveTo(p.X, p.Y);
+            if (this.m_bBackReturn)
+                this.MoveTo(p.X, p.Y);
 
             return pixel;
         }
