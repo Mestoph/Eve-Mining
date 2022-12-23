@@ -56,6 +56,8 @@
             this.NumS = new System.Windows.Forms.NumericUpDown();
             this.LblPortal = new System.Windows.Forms.Label();
             this.ChkPortal = new System.Windows.Forms.CheckBox();
+            this.ChkDrone = new System.Windows.Forms.CheckBox();
+            this.LblDrone = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumS)).BeginInit();
@@ -335,11 +337,31 @@
             this.ChkPortal.TabIndex = 43;
             this.ChkPortal.UseVisualStyleBackColor = true;
             // 
+            // ChkDrone
+            // 
+            this.ChkDrone.AutoSize = true;
+            this.ChkDrone.Location = new System.Drawing.Point(99, 77);
+            this.ChkDrone.Name = "ChkDrone";
+            this.ChkDrone.Size = new System.Drawing.Size(15, 14);
+            this.ChkDrone.TabIndex = 45;
+            this.ChkDrone.UseVisualStyleBackColor = true;
+            // 
+            // LblDrone
+            // 
+            this.LblDrone.AutoSize = true;
+            this.LblDrone.Location = new System.Drawing.Point(2, 78);
+            this.LblDrone.Name = "LblDrone";
+            this.LblDrone.Size = new System.Drawing.Size(64, 13);
+            this.LblDrone.TabIndex = 44;
+            this.LblDrone.Text = "Use drones:";
+            // 
             // FrmGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(215, 225);
+            this.Controls.Add(this.ChkDrone);
+            this.Controls.Add(this.LblDrone);
             this.Controls.Add(this.ChkPortal);
             this.Controls.Add(this.LblPortal);
             this.Controls.Add(this.NumS);
@@ -409,6 +431,8 @@
         private NumericUpDown NumS;
         private Label LblPortal;
         private CheckBox ChkPortal;
+        private CheckBox ChkDrone;
+        private Label LblDrone;
     }
 }
 

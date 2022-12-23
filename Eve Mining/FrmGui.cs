@@ -152,10 +152,10 @@ namespace Eve_Mining
 
         private void BtnPause_Click(object sender, EventArgs e)
         {
-            if (this.m_BotState == BotState.Started)
-                this.MiningPause();
-            else
+            if (this.m_BotState == BotState.Suspended)
                 this.MiningResume();
+            else
+                this.MiningPause();
         }
 
         #endregion
@@ -276,6 +276,14 @@ namespace Eve_Mining
             return true;
         }
 
+        private bool MiningIsSuspended()
+        {
+            if (this.m_BotState == BotState.Suspended)
+                return true;
+
+            return false;
+        }
+
         private void Mining()
         {
             Mouse m = new Mouse
@@ -329,7 +337,7 @@ namespace Eve_Mining
                             m.RightClickTo(rW.X + iCx, rW.Y + iCy);
                             m.LeftClickTo((rW.X + iCx) + 50, (rW.Y + iCy) + 15);
 
-                            while (!m.GetPixel(rW.X + 62, rW.Y + 85).Equals(Color.FromArgb(255, 255, 255)))
+                            while (!this.MiningIsSuspended() && !m.GetPixel(rW.X + 62, rW.Y + 85).Equals(Color.FromArgb(255, 255, 255)))
                             {
                                 Thread.Sleep(1000);
 
@@ -346,8 +354,8 @@ namespace Eve_Mining
                             this.OpenMainMenu(ref m, rW);
                             this.WarpToBelt(ref m, rW);
 
-                            while (m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
-                                m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF")))
+                            while (!this.MiningIsSuspended() && (m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
+                                m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF"))))
                             {
                                 Thread.Sleep(1000);
 
@@ -372,10 +380,14 @@ namespace Eve_Mining
                             m.LeftClickTo(rW.X + rW.Width - 395, rW.Y + 237);
                             m.LeftClickTo(rW.X + rW.Width - 395, rW.Y + 292 + (24 * this.m_iSelection));
 
-                            while (!m.GetPixel(rW.X + rW.Width - 546, rW.Y + 163).Equals(Color.FromArgb(255, 255, 255))
+                            Color c1 = m.GetPixel(rW.X + rW.Width - 560, rW.Y + 292 + (24 * this.m_iSelection)).BasedColorFromHue6();
+
+
+                            while (!this.MiningIsSuspended() && (!m.GetPixel(rW.X + rW.Width - 546, rW.Y + 163).Equals(Color.FromArgb(255, 255, 255))
                                 || (m.GetPixel(rW.X + rW.Width - 555, rW.Y + 295 + (24 * this.m_iSelection)).Equals(Color.FromArgb(255, 255, 255)) &&
                                     m.GetPixel(rW.X + rW.Width - 555, rW.Y + 299 + (24 * this.m_iSelection)).Equals(Color.FromArgb(255, 255, 255)))
-                                || m.GetPixel(rW.X + rW.Width - 556, rW.Y + 297 + (24 * this.m_iSelection)).Equals(Color.FromArgb(255, 255, 255)))
+                                || m.GetPixel(rW.X + rW.Width - 556, rW.Y + 297 + (24 * this.m_iSelection)).Equals(Color.FromArgb(255, 255, 255))
+                                || (c1.Equals(Color.FromArgb(255, 0, 0)) || c1.Equals(Color.FromArgb(255, 0, 255)))))
                             {
 
 
@@ -433,8 +445,8 @@ namespace Eve_Mining
 
                             m.LeftClickTo(rW.X + rW.Width - 546, rW.Y + 163);
 
-                            while (m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
-                                m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF")))
+                            while (!this.MiningIsSuspended() && (m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
+                                m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF"))))
                             {
                                 Thread.Sleep(1000);
 
@@ -451,7 +463,7 @@ namespace Eve_Mining
 
                         case MiningState.Locking_target:
                             m.GetPixel(rW.X + rW.Width - 413, rW.Y + 154).BasedColorFromHue24();
-                            while (!m.GetPixel(rW.X + rW.Width - 413, rW.Y + 154).Equals(Color.FromArgb(255, 255, 255)))
+                            while (!this.MiningIsSuspended() && (!m.GetPixel(rW.X + rW.Width - 413, rW.Y + 154).Equals(Color.FromArgb(255, 255, 255))))
                             {
                                 Thread.Sleep(1000);
 
@@ -460,6 +472,11 @@ namespace Eve_Mining
                             }
 
                             m.LeftClickTo(rW.X + rW.Width - 413, rW.Y + 154);
+
+                            if (this.ChkDrone.Checked)
+                            {
+                                m.LeftClickTo(rW.X + rW.Width - 41, rW.Y + rC.Bottom - 136);
+                            }
 
                             this.m_MiningState = MiningState.Fiering_lasers;
 
@@ -497,7 +514,7 @@ namespace Eve_Mining
                             bool s = m.GetPixel(rW.X + 540, rW.Y + 321).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
                                 m.GetPixel(rW.X + 540, rW.Y + 321).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF"));
 
-                            while (!f || f != s)
+                            while (!this.MiningIsSuspended() && (!f || f != s))
                             {
                                 if (!m.GetPixel(rW.X + rW.Width - 413, rW.Y + 154).Equals(Color.FromArgb(255, 255, 255)))
                                 {
@@ -510,6 +527,11 @@ namespace Eve_Mining
 
                                 if (!this.MiningIsAlive())
                                     return;
+                            }
+
+                            if (this.ChkDrone.Checked)
+                            {
+                                m.LeftClickTo(rW.X + rW.Width - 41, rW.Y + rC.Bottom - 76);
                             }
 
                             if (end)
@@ -536,8 +558,8 @@ namespace Eve_Mining
 
                             this.m_iStation = 1;
 
-                            while (m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
-                                m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF")))
+                            while (!this.MiningIsSuspended() && (m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00FFFF")) ||
+                                m.GetPixel(rW.X + iCx - 37, rW.Y + rC.Bottom - 62).BasedColorFromHue24().Equals(ColorTranslator.FromHtml("#00BFFF"))))
                             {
                                 Thread.Sleep(1000);
 
@@ -549,7 +571,7 @@ namespace Eve_Mining
                             m.LeftClickTo(rW.X + rW.Width - 424, rW.Y + 292);
                             m.LeftClickTo(rW.X + rW.Width - 482, rW.Y + 163);
 
-                            while (!m.GetPixel(rW.X + rW.Width - 43, rW.Y + 30).Equals(Color.FromArgb(255, 255, 255)))
+                            while (!this.MiningIsSuspended() && (!m.GetPixel(rW.X + rW.Width - 43, rW.Y + 30).Equals(Color.FromArgb(255, 255, 255))))
                             {
                                 Thread.Sleep(1000);
 
@@ -580,7 +602,7 @@ namespace Eve_Mining
                             m.LeftClickTo(rW.X + 662, rW.Y + 225);
                             m.LeftClickTo(rW.X + rW.Width - 120, rW.Y + 217);
 
-                            //Thread.Sleep(10000);
+                            Thread.Sleep(10000);
 
                             m.LeftClickTo(rW.X + 25, rW.Y + 25);
                             m.LeftClickTo(rW.X + 80, rW.Y + 588);
@@ -648,7 +670,7 @@ namespace Eve_Mining
 
             Screen screen = Screen.FromHandle(GetEvehWnd());
 
-            this.Left = screen.WorkingArea.Right - this.Width;
+            this.Left = screen.WorkingArea.Left + 50;
             this.Top = screen.WorkingArea.Bottom - this.Height;
             this.TopMost = true;
             this.Opacity = this.Opacity = .4;
@@ -724,6 +746,7 @@ namespace Eve_Mining
             this.NumS.Value = Config.ReadDecimal("MaxStationWarp", 1);
 
             this.ChkPortal.Checked = Config.ReadBoolean("UsePortal");
+            this.ChkDrone.Checked = Config.ReadBoolean("UseDrone");
         }
 
         private void FrmGui_FormClosing(object sender, FormClosingEventArgs e)
@@ -736,6 +759,7 @@ namespace Eve_Mining
             Config.AddOrUpdate("MaxStationWarp", this.NumS.Value);
 
             Config.AddOrUpdate("UsePortal", this.ChkPortal.Checked);
+            Config.AddOrUpdate("UseDrone", this.ChkDrone.Checked);
         }
 
         private void NumB_ValueChanged(object sender, EventArgs e)
