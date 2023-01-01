@@ -14,7 +14,8 @@
         Docking = 9,
         Unloading = 10,
         Cleaning_interface = 11,
-        Warping_to_portal = 12
-
+        Warping_to_portal = 12,
+        Compressing_ores = 13,
+        Droping_compressed_ores = 14,
     }
 }

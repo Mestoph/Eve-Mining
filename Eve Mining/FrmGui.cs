@@ -4,8 +4,10 @@ using Eve_Mining.Tools;
 using Eve_Mining.Windows;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -88,6 +90,8 @@ namespace Eve_Mining
             this.StatusStrip.Text = INITIALIZING;
 
             this.KeyPreview = true;
+
+            //CheckForIllegalCrossThreadCalls = false;
         }
 
         ~FrmGui()
@@ -164,12 +168,18 @@ namespace Eve_Mining
             this.Chk1.Checked = Config.ReadBoolean("F1");
             this.Chk2.Checked = Config.ReadBoolean("F2");
             this.Chk3.Checked = Config.ReadBoolean("F3");
+            this.Chk4.Checked = Config.ReadBoolean("F4");
+            this.Chk5.Checked = Config.ReadBoolean("F5");
+            this.Chk6.Checked = Config.ReadBoolean("F6");
+            this.Chk7.Checked = Config.ReadBoolean("F7");
+            this.Chk8.Checked = Config.ReadBoolean("F8");
 
             this.NumB.Value = Config.ReadDecimal("MaxBeltWarp", 1);
             this.NumS.Value = Config.ReadDecimal("MaxStationWarp", 1);
 
             this.ChkPortal.Checked = Config.ReadBoolean("UsePortal");
             this.ChkDrone.Checked = Config.ReadBoolean("UseDrone");
+            this.ChkFleet.Checked = Config.ReadBoolean("UseFleet");
         }
 
         private void FrmGui_FormClosing(object sender, FormClosingEventArgs e)
@@ -177,12 +187,18 @@ namespace Eve_Mining
             Config.AddOrUpdate("F1", this.Chk1.Checked);
             Config.AddOrUpdate("F2", this.Chk2.Checked);
             Config.AddOrUpdate("F3", this.Chk3.Checked);
+            Config.AddOrUpdate("F4", this.Chk4.Checked);
+            Config.AddOrUpdate("F5", this.Chk5.Checked);
+            Config.AddOrUpdate("F6", this.Chk6.Checked);
+            Config.AddOrUpdate("F7", this.Chk7.Checked);
+            Config.AddOrUpdate("F8", this.Chk8.Checked);
 
             Config.AddOrUpdate("MaxBeltWarp", this.NumB.Value);
             Config.AddOrUpdate("MaxStationWarp", this.NumS.Value);
 
             Config.AddOrUpdate("UsePortal", this.ChkPortal.Checked);
             Config.AddOrUpdate("UseDrone", this.ChkDrone.Checked);
+            Config.AddOrUpdate("UseFleet", this.ChkFleet.Checked);
         }
 
         private void NumB_ValueChanged(object sender, EventArgs e)
@@ -358,6 +374,8 @@ namespace Eve_Mining
                     Rectangle rW = Api.GetWindowRect(hWnd);
                     if (rW.IsEmpty)
                         return;
+
+                    this.CheckIsInFleet();
 
                     rW.Y = rW.Bottom - rC.Bottom - 1;
                     int iCx = rC.Right / 2;
@@ -601,7 +619,10 @@ namespace Eve_Mining
                                 break;
                             }
 
-                            this.m_MiningState = MiningState.Warping_to_station;
+                            if (this.ChkFleet.Checked)
+                                this.m_MiningState = MiningState.Compressing_ores;
+                            else
+                                this.m_MiningState = MiningState.Warping_to_station;
 
                             break;
 
@@ -688,6 +709,26 @@ namespace Eve_Mining
                             this.m_iCycles++;
 
                             this.m_MiningState = MiningState.Undocking;
+
+                            break;
+
+                        #endregion
+                        #region Compressing ores
+
+                        case MiningState.Compressing_ores:
+
+
+
+                            if (this.ChkFleet.Checked)
+                                this.m_MiningState = MiningState.Compressing_ores;
+
+
+                            break;
+
+                        #endregion
+                        #region Droping compressed ores
+
+                        case MiningState.Droping_compressed_ores:
 
                             break;
 
@@ -816,6 +857,20 @@ namespace Eve_Mining
             this.Status.Text = string.Concat(this.StatusStrip.Text, new string('.', this.m_iNumberOfDot));
 
             this.m_iNumberOfDot = (this.m_iNumberOfDot + 1) % (MAX_DOT + 1);
+        }
+
+        private void CheckIsInFleet()
+        {
+            if (!this.ChkFleet.Checked)
+                return;
+
+            if (this.m_MiningState != MiningState.Selecting_target && 
+                this.m_MiningState != MiningState.Locking_target &&
+                this.m_MiningState != MiningState.Fiering_lasers &&
+                this.m_MiningState != MiningState.Mining &&
+                this.m_MiningState != MiningState.Compressing_ores && 
+                this.m_MiningState != MiningState.Droping_compressed_ores)
+                this.m_MiningState = MiningState.Selecting_target;
         }
 
         #endregion

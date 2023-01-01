@@ -497,5 +497,14 @@ namespace Eve_Mining.Windows
         }
 
         #endregion
+
+        [DllImport("user32.dll")]
+        public static extern short GetAsyncKeyState(System.Windows.Forms.Keys vKey);
+
+        [DllImport("user32.dll")]
+        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
     }
 }

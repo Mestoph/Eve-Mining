@@ -47,17 +47,24 @@
             this.LblLasers = new System.Windows.Forms.Label();
             this.Chk1 = new System.Windows.Forms.CheckBox();
             this.Chk3 = new System.Windows.Forms.CheckBox();
-            this.Chk2 = new System.Windows.Forms.CheckBox();
             this.LblBeltV = new System.Windows.Forms.Label();
             this.LblStationV = new System.Windows.Forms.Label();
             this.NumB = new System.Windows.Forms.NumericUpDown();
             this.LblMaxB = new System.Windows.Forms.Label();
             this.LblMaxS = new System.Windows.Forms.Label();
             this.NumS = new System.Windows.Forms.NumericUpDown();
-            this.LblPortal = new System.Windows.Forms.Label();
             this.ChkPortal = new System.Windows.Forms.CheckBox();
             this.ChkDrone = new System.Windows.Forms.CheckBox();
-            this.LblDrone = new System.Windows.Forms.Label();
+            this.ChkFleet = new System.Windows.Forms.CheckBox();
+            this.LblFleet = new System.Windows.Forms.Label();
+            this.LblFleetI = new System.Windows.Forms.Label();
+            this.Chk4 = new System.Windows.Forms.CheckBox();
+            this.Chk8 = new System.Windows.Forms.CheckBox();
+            this.Chk7 = new System.Windows.Forms.CheckBox();
+            this.Chk6 = new System.Windows.Forms.CheckBox();
+            this.Chk5 = new System.Windows.Forms.CheckBox();
+            this.Chk2 = new System.Windows.Forms.CheckBox();
+            this.lblMisc = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumS)).BeginInit();
@@ -65,18 +72,17 @@
             // 
             // LblAvrTime
             // 
-            this.LblAvrTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LblAvrTime.AutoSize = true;
-            this.LblAvrTime.Location = new System.Drawing.Point(2, 164);
+            this.LblAvrTime.Location = new System.Drawing.Point(2, 174);
             this.LblAvrTime.Name = "LblAvrTime";
-            this.LblAvrTime.Size = new System.Drawing.Size(100, 13);
+            this.LblAvrTime.Size = new System.Drawing.Size(82, 13);
             this.LblAvrTime.TabIndex = 2;
-            this.LblAvrTime.Text = "Average cycle time:";
+            this.LblAvrTime.Text = "Avg. cycle time:";
             // 
             // LblStation
             // 
             this.LblStation.AutoSize = true;
-            this.LblStation.Location = new System.Drawing.Point(2, 22);
+            this.LblStation.Location = new System.Drawing.Point(2, 21);
             this.LblStation.Name = "LblStation";
             this.LblStation.Size = new System.Drawing.Size(66, 13);
             this.LblStation.TabIndex = 4;
@@ -84,9 +90,8 @@
             // 
             // LblCycle
             // 
-            this.LblCycle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LblCycle.AutoSize = true;
-            this.LblCycle.Location = new System.Drawing.Point(2, 144);
+            this.LblCycle.Location = new System.Drawing.Point(2, 161);
             this.LblCycle.Name = "LblCycle";
             this.LblCycle.Size = new System.Drawing.Size(36, 13);
             this.LblCycle.TabIndex = 5;
@@ -103,9 +108,8 @@
             // 
             // LblTotalTime
             // 
-            this.LblTotalTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LblTotalTime.AutoSize = true;
-            this.LblTotalTime.Location = new System.Drawing.Point(2, 124);
+            this.LblTotalTime.Location = new System.Drawing.Point(2, 148);
             this.LblTotalTime.Name = "LblTotalTime";
             this.LblTotalTime.Size = new System.Drawing.Size(56, 13);
             this.LblTotalTime.TabIndex = 7;
@@ -113,9 +117,8 @@
             // 
             // LblStatus
             // 
-            this.LblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LblStatus.AutoSize = true;
-            this.LblStatus.Location = new System.Drawing.Point(2, 104);
+            this.LblStatus.Location = new System.Drawing.Point(2, 135);
             this.LblStatus.Name = "LblStatus";
             this.LblStatus.Size = new System.Drawing.Size(40, 13);
             this.LblStatus.TabIndex = 8;
@@ -123,10 +126,9 @@
             // 
             // BtnStart
             // 
-            this.BtnStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.BtnStart.Location = new System.Drawing.Point(3, 180);
+            this.BtnStart.Location = new System.Drawing.Point(-1, 190);
             this.BtnStart.Name = "BtnStart";
-            this.BtnStart.Size = new System.Drawing.Size(104, 20);
+            this.BtnStart.Size = new System.Drawing.Size(94, 20);
             this.BtnStart.TabIndex = 9;
             this.BtnStart.Text = "Start";
             this.BtnStart.UseVisualStyleBackColor = true;
@@ -134,10 +136,9 @@
             // 
             // BtnPause
             // 
-            this.BtnPause.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.BtnPause.Location = new System.Drawing.Point(107, 180);
+            this.BtnPause.Location = new System.Drawing.Point(92, 190);
             this.BtnPause.Name = "BtnPause";
-            this.BtnPause.Size = new System.Drawing.Size(104, 20);
+            this.BtnPause.Size = new System.Drawing.Size(94, 20);
             this.BtnPause.TabIndex = 11;
             this.BtnPause.Text = "Pause";
             this.BtnPause.UseVisualStyleBackColor = true;
@@ -145,51 +146,51 @@
             // 
             // LblStatusV
             // 
-            this.LblStatusV.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.LblStatusV.AutoSize = true;
-            this.LblStatusV.Location = new System.Drawing.Point(96, 104);
+            this.LblStatusV.ForeColor = System.Drawing.Color.Green;
+            this.LblStatusV.Location = new System.Drawing.Point(76, 135);
             this.LblStatusV.Name = "LblStatusV";
-            this.LblStatusV.Size = new System.Drawing.Size(40, 13);
+            this.LblStatusV.Size = new System.Drawing.Size(108, 13);
             this.LblStatusV.TabIndex = 20;
-            this.LblStatusV.Text = "Status:";
+            this.LblStatusV.Text = "Status";
+            this.LblStatusV.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // LblTotalTimeV
             // 
-            this.LblTotalTimeV.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.LblTotalTimeV.AutoSize = true;
-            this.LblTotalTimeV.Location = new System.Drawing.Point(96, 124);
+            this.LblTotalTimeV.ForeColor = System.Drawing.Color.Green;
+            this.LblTotalTimeV.Location = new System.Drawing.Point(76, 148);
             this.LblTotalTimeV.Name = "LblTotalTimeV";
-            this.LblTotalTimeV.Size = new System.Drawing.Size(40, 13);
+            this.LblTotalTimeV.Size = new System.Drawing.Size(108, 13);
             this.LblTotalTimeV.TabIndex = 21;
-            this.LblTotalTimeV.Text = "Status:";
+            this.LblTotalTimeV.Text = "Status";
+            this.LblTotalTimeV.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // LblCycleV
             // 
-            this.LblCycleV.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.LblCycleV.AutoSize = true;
-            this.LblCycleV.Location = new System.Drawing.Point(96, 144);
+            this.LblCycleV.ForeColor = System.Drawing.Color.Green;
+            this.LblCycleV.Location = new System.Drawing.Point(76, 161);
             this.LblCycleV.Name = "LblCycleV";
-            this.LblCycleV.Size = new System.Drawing.Size(40, 13);
+            this.LblCycleV.Size = new System.Drawing.Size(108, 13);
             this.LblCycleV.TabIndex = 22;
-            this.LblCycleV.Text = "Status:";
+            this.LblCycleV.Text = "Status";
+            this.LblCycleV.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // LblAvrTimeV
             // 
-            this.LblAvrTimeV.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.LblAvrTimeV.AutoSize = true;
-            this.LblAvrTimeV.Location = new System.Drawing.Point(96, 164);
+            this.LblAvrTimeV.ForeColor = System.Drawing.Color.Green;
+            this.LblAvrTimeV.Location = new System.Drawing.Point(76, 174);
             this.LblAvrTimeV.Name = "LblAvrTimeV";
-            this.LblAvrTimeV.Size = new System.Drawing.Size(40, 13);
+            this.LblAvrTimeV.Size = new System.Drawing.Size(108, 13);
             this.LblAvrTimeV.TabIndex = 23;
-            this.LblAvrTimeV.Text = "Status:";
+            this.LblAvrTimeV.Text = "Status";
+            this.LblAvrTimeV.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // StatusStrip
             // 
             this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.Status});
-            this.StatusStrip.Location = new System.Drawing.Point(0, 203);
+            this.StatusStrip.Location = new System.Drawing.Point(0, 209);
             this.StatusStrip.Name = "StatusStrip";
-            this.StatusStrip.Size = new System.Drawing.Size(215, 22);
+            this.StatusStrip.Size = new System.Drawing.Size(185, 22);
             this.StatusStrip.TabIndex = 24;
             this.StatusStrip.Text = "Status";
             // 
@@ -201,7 +202,7 @@
             // LblLasers
             // 
             this.LblLasers.AutoSize = true;
-            this.LblLasers.Location = new System.Drawing.Point(2, 41);
+            this.LblLasers.Location = new System.Drawing.Point(2, 43);
             this.LblLasers.Name = "LblLasers";
             this.LblLasers.Size = new System.Drawing.Size(76, 13);
             this.LblLasers.TabIndex = 27;
@@ -209,38 +210,32 @@
             // 
             // Chk1
             // 
-            this.Chk1.AutoSize = true;
-            this.Chk1.Location = new System.Drawing.Point(99, 40);
+            this.Chk1.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Chk1.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Chk1.Location = new System.Drawing.Point(79, 39);
             this.Chk1.Name = "Chk1";
-            this.Chk1.Size = new System.Drawing.Size(38, 17);
+            this.Chk1.Size = new System.Drawing.Size(28, 20);
             this.Chk1.TabIndex = 28;
             this.Chk1.Text = "F1";
+            this.Chk1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.Chk1.UseVisualStyleBackColor = true;
             // 
             // Chk3
             // 
-            this.Chk3.AutoSize = true;
-            this.Chk3.Location = new System.Drawing.Point(179, 40);
+            this.Chk3.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Chk3.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Chk3.Location = new System.Drawing.Point(131, 39);
             this.Chk3.Name = "Chk3";
-            this.Chk3.Size = new System.Drawing.Size(38, 17);
+            this.Chk3.Size = new System.Drawing.Size(28, 20);
             this.Chk3.TabIndex = 34;
             this.Chk3.Text = "F3";
+            this.Chk3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.Chk3.UseVisualStyleBackColor = true;
-            // 
-            // Chk2
-            // 
-            this.Chk2.AutoSize = true;
-            this.Chk2.Location = new System.Drawing.Point(138, 40);
-            this.Chk2.Name = "Chk2";
-            this.Chk2.Size = new System.Drawing.Size(38, 17);
-            this.Chk2.TabIndex = 35;
-            this.Chk2.Text = "F2";
-            this.Chk2.UseVisualStyleBackColor = true;
             // 
             // LblBeltV
             // 
             this.LblBeltV.AutoSize = true;
-            this.LblBeltV.Location = new System.Drawing.Point(96, 2);
+            this.LblBeltV.Location = new System.Drawing.Point(66, 2);
             this.LblBeltV.Name = "LblBeltV";
             this.LblBeltV.Size = new System.Drawing.Size(47, 13);
             this.LblBeltV.TabIndex = 36;
@@ -249,7 +244,7 @@
             // LblStationV
             // 
             this.LblStationV.AutoSize = true;
-            this.LblStationV.Location = new System.Drawing.Point(96, 22);
+            this.LblStationV.Location = new System.Drawing.Point(66, 21);
             this.LblStationV.Name = "LblStationV";
             this.LblStationV.Size = new System.Drawing.Size(62, 13);
             this.LblStationV.TabIndex = 37;
@@ -257,7 +252,7 @@
             // 
             // NumB
             // 
-            this.NumB.Location = new System.Drawing.Point(183, 0);
+            this.NumB.Location = new System.Drawing.Point(156, 0);
             this.NumB.Maximum = new decimal(new int[] {
             8,
             0,
@@ -281,7 +276,7 @@
             // LblMaxB
             // 
             this.LblMaxB.AutoSize = true;
-            this.LblMaxB.Location = new System.Drawing.Point(153, 2);
+            this.LblMaxB.Location = new System.Drawing.Point(128, 2);
             this.LblMaxB.Name = "LblMaxB";
             this.LblMaxB.Size = new System.Drawing.Size(30, 13);
             this.LblMaxB.TabIndex = 39;
@@ -290,7 +285,7 @@
             // LblMaxS
             // 
             this.LblMaxS.AutoSize = true;
-            this.LblMaxS.Location = new System.Drawing.Point(153, 22);
+            this.LblMaxS.Location = new System.Drawing.Point(128, 21);
             this.LblMaxS.Name = "LblMaxS";
             this.LblMaxS.Size = new System.Drawing.Size(30, 13);
             this.LblMaxS.TabIndex = 40;
@@ -298,7 +293,7 @@
             // 
             // NumS
             // 
-            this.NumS.Location = new System.Drawing.Point(183, 20);
+            this.NumS.Location = new System.Drawing.Point(156, 19);
             this.NumS.Maximum = new decimal(new int[] {
             8,
             0,
@@ -319,58 +314,167 @@
             0});
             this.NumS.ValueChanged += new System.EventHandler(this.NumS_ValueChanged);
             // 
-            // LblPortal
-            // 
-            this.LblPortal.AutoSize = true;
-            this.LblPortal.Location = new System.Drawing.Point(2, 60);
-            this.LblPortal.Name = "LblPortal";
-            this.LblPortal.Size = new System.Drawing.Size(58, 13);
-            this.LblPortal.TabIndex = 42;
-            this.LblPortal.Text = "Use protal:";
-            // 
             // ChkPortal
             // 
-            this.ChkPortal.AutoSize = true;
-            this.ChkPortal.Location = new System.Drawing.Point(99, 59);
+            this.ChkPortal.Appearance = System.Windows.Forms.Appearance.Button;
+            this.ChkPortal.Location = new System.Drawing.Point(79, 76);
             this.ChkPortal.Name = "ChkPortal";
-            this.ChkPortal.Size = new System.Drawing.Size(15, 14);
+            this.ChkPortal.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.ChkPortal.Size = new System.Drawing.Size(106, 20);
             this.ChkPortal.TabIndex = 43;
+            this.ChkPortal.Text = "Use portals";
+            this.ChkPortal.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.ChkPortal.UseVisualStyleBackColor = true;
             // 
             // ChkDrone
             // 
-            this.ChkDrone.AutoSize = true;
-            this.ChkDrone.Location = new System.Drawing.Point(99, 77);
+            this.ChkDrone.Appearance = System.Windows.Forms.Appearance.Button;
+            this.ChkDrone.Location = new System.Drawing.Point(79, 94);
             this.ChkDrone.Name = "ChkDrone";
-            this.ChkDrone.Size = new System.Drawing.Size(15, 14);
+            this.ChkDrone.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.ChkDrone.Size = new System.Drawing.Size(106, 20);
             this.ChkDrone.TabIndex = 45;
+            this.ChkDrone.Text = "Use drones";
+            this.ChkDrone.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.ChkDrone.UseVisualStyleBackColor = true;
             // 
-            // LblDrone
+            // ChkFleet
             // 
-            this.LblDrone.AutoSize = true;
-            this.LblDrone.Location = new System.Drawing.Point(2, 78);
-            this.LblDrone.Name = "LblDrone";
-            this.LblDrone.Size = new System.Drawing.Size(64, 13);
-            this.LblDrone.TabIndex = 44;
-            this.LblDrone.Text = "Use drones:";
+            this.ChkFleet.Appearance = System.Windows.Forms.Appearance.Button;
+            this.ChkFleet.Location = new System.Drawing.Point(79, 112);
+            this.ChkFleet.Name = "ChkFleet";
+            this.ChkFleet.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.ChkFleet.Size = new System.Drawing.Size(106, 20);
+            this.ChkFleet.TabIndex = 47;
+            this.ChkFleet.Text = "Use fleet";
+            this.ChkFleet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ChkFleet.UseVisualStyleBackColor = true;
+            // 
+            // LblFleet
+            // 
+            this.LblFleet.AutoSize = true;
+            this.LblFleet.Location = new System.Drawing.Point(6, 107);
+            this.LblFleet.Name = "LblFleet";
+            this.LblFleet.Size = new System.Drawing.Size(0, 13);
+            this.LblFleet.TabIndex = 46;
+            // 
+            // LblFleetI
+            // 
+            this.LblFleetI.AutoSize = true;
+            this.LblFleetI.ForeColor = System.Drawing.Color.DarkRed;
+            this.LblFleetI.Location = new System.Drawing.Point(2, 116);
+            this.LblFleetI.Name = "LblFleetI";
+            this.LblFleetI.Size = new System.Drawing.Size(76, 13);
+            this.LblFleetI.TabIndex = 48;
+            this.LblFleetI.Text = "Disable warps!";
+            // 
+            // Chk4
+            // 
+            this.Chk4.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Chk4.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Chk4.FlatAppearance.BorderColor = System.Drawing.Color.DarkGray;
+            this.Chk4.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
+            this.Chk4.Location = new System.Drawing.Point(157, 39);
+            this.Chk4.Name = "Chk4";
+            this.Chk4.Size = new System.Drawing.Size(28, 20);
+            this.Chk4.TabIndex = 49;
+            this.Chk4.Text = "F4";
+            this.Chk4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Chk4.UseVisualStyleBackColor = true;
+            // 
+            // Chk8
+            // 
+            this.Chk8.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Chk8.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Chk8.Location = new System.Drawing.Point(157, 57);
+            this.Chk8.Name = "Chk8";
+            this.Chk8.Size = new System.Drawing.Size(28, 20);
+            this.Chk8.TabIndex = 51;
+            this.Chk8.Text = "F8";
+            this.Chk8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Chk8.UseVisualStyleBackColor = true;
+            // 
+            // Chk7
+            // 
+            this.Chk7.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Chk7.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Chk7.Location = new System.Drawing.Point(131, 57);
+            this.Chk7.Name = "Chk7";
+            this.Chk7.Size = new System.Drawing.Size(28, 20);
+            this.Chk7.TabIndex = 52;
+            this.Chk7.Text = "F7";
+            this.Chk7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Chk7.UseVisualStyleBackColor = true;
+            // 
+            // Chk6
+            // 
+            this.Chk6.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Chk6.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Chk6.Location = new System.Drawing.Point(105, 57);
+            this.Chk6.Name = "Chk6";
+            this.Chk6.Size = new System.Drawing.Size(28, 20);
+            this.Chk6.TabIndex = 53;
+            this.Chk6.Text = "F6";
+            this.Chk6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Chk6.UseVisualStyleBackColor = true;
+            // 
+            // Chk5
+            // 
+            this.Chk5.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Chk5.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Chk5.Location = new System.Drawing.Point(79, 57);
+            this.Chk5.Name = "Chk5";
+            this.Chk5.Size = new System.Drawing.Size(28, 20);
+            this.Chk5.TabIndex = 54;
+            this.Chk5.Text = "F5";
+            this.Chk5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Chk5.UseVisualStyleBackColor = true;
+            // 
+            // Chk2
+            // 
+            this.Chk2.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Chk2.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Chk2.Location = new System.Drawing.Point(105, 39);
+            this.Chk2.Name = "Chk2";
+            this.Chk2.Size = new System.Drawing.Size(28, 20);
+            this.Chk2.TabIndex = 55;
+            this.Chk2.Text = "F2";
+            this.Chk2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Chk2.UseVisualStyleBackColor = true;
+            // 
+            // lblMisc
+            // 
+            this.lblMisc.AutoSize = true;
+            this.lblMisc.Location = new System.Drawing.Point(2, 80);
+            this.lblMisc.Name = "lblMisc";
+            this.lblMisc.Size = new System.Drawing.Size(77, 13);
+            this.lblMisc.TabIndex = 56;
+            this.lblMisc.Text = "Miscellaneous:";
             // 
             // FrmGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(215, 225);
+            this.ClientSize = new System.Drawing.Size(185, 231);
+            this.Controls.Add(this.LblAvrTime);
+            this.Controls.Add(this.lblMisc);
+            this.Controls.Add(this.NumB);
+            this.Controls.Add(this.Chk2);
+            this.Controls.Add(this.Chk5);
+            this.Controls.Add(this.Chk6);
+            this.Controls.Add(this.Chk7);
+            this.Controls.Add(this.Chk8);
+            this.Controls.Add(this.Chk4);
+            this.Controls.Add(this.LblFleetI);
+            this.Controls.Add(this.ChkFleet);
+            this.Controls.Add(this.LblFleet);
             this.Controls.Add(this.ChkDrone);
-            this.Controls.Add(this.LblDrone);
             this.Controls.Add(this.ChkPortal);
-            this.Controls.Add(this.LblPortal);
             this.Controls.Add(this.NumS);
             this.Controls.Add(this.LblMaxS);
             this.Controls.Add(this.LblMaxB);
-            this.Controls.Add(this.NumB);
             this.Controls.Add(this.LblStationV);
             this.Controls.Add(this.LblBeltV);
-            this.Controls.Add(this.Chk2);
             this.Controls.Add(this.Chk3);
             this.Controls.Add(this.Chk1);
             this.Controls.Add(this.LblLasers);
@@ -386,7 +490,6 @@
             this.Controls.Add(this.LblBelt);
             this.Controls.Add(this.LblCycle);
             this.Controls.Add(this.LblStation);
-            this.Controls.Add(this.LblAvrTime);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -422,17 +525,24 @@
         private Label LblLasers;
         private CheckBox Chk1;
         private CheckBox Chk3;
-        private CheckBox Chk2;
         private Label LblBeltV;
         private Label LblStationV;
         private NumericUpDown NumB;
         private Label LblMaxB;
         private Label LblMaxS;
         private NumericUpDown NumS;
-        private Label LblPortal;
         private CheckBox ChkPortal;
         private CheckBox ChkDrone;
-        private Label LblDrone;
+        private CheckBox ChkFleet;
+        private Label LblFleet;
+        private Label LblFleetI;
+        private CheckBox Chk4;
+        private CheckBox Chk8;
+        private CheckBox Chk7;
+        private CheckBox Chk6;
+        private CheckBox Chk5;
+        private CheckBox Chk2;
+        private Label lblMisc;
     }
 }
 
