@@ -349,6 +349,7 @@
             this.ChkFleet.Text = "Use fleet";
             this.ChkFleet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.ChkFleet.UseVisualStyleBackColor = true;
+            this.ChkFleet.CheckedChanged += new System.EventHandler(this.ChkFleet_CheckedChanged);
             // 
             // LblFleet
             // 
